@@ -11,6 +11,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	Console *consoleWidget = new Console();
 	setCentralWidget(consoleWidget);
+
+	QTimer *timer = new QTimer();
+	timer->
 }
 
 MainWindow::~MainWindow()
