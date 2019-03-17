@@ -2,6 +2,7 @@
 #define CPU6502_H
 
 #include <cstdint>
+#include "memory.h"
 
 class Cpu6502
 {
@@ -14,6 +15,8 @@ public:
 	uint8_t sp;
 	uint16_t pc;
 	uint8_t p;
+
+	Memory *memory;
 
 	static const uint8_t NEGATIVE_FLAG_MASK =   0b10000000;
 	static const uint8_t OVERFLOW_FLAG_MASK =   0b01000000;

@@ -16,11 +16,15 @@ SOURCES += main.cpp\
         mainwindow.cpp \
 	cpu6502/cpu6502.cpp \
 	utils/utils.cpp \
-    console.cpp
+    console.cpp \
+    computer/systembus.cpp
 
 HEADERS  += mainwindow.h \
 	cpu6502/cpu6502.h \
 	utils/utils.h \
-	console.h
+	console.h \
+    cpu6502/memory.h \
+    computer/systembus.h \
+    computer/device.h
 
 FORMS    += mainwindow.ui

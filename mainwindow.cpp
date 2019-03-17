@@ -1,7 +1,10 @@
 #include <QTimer>
+#include <QDebug>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "console.h"
+
+//static
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -13,7 +16,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	setCentralWidget(consoleWidget);
 
 	QTimer *timer = new QTimer();
-	timer->
+	connect(timer, &QTimer::timeout, [] {
+
+	});
+	timer->start();
 }
 
 MainWindow::~MainWindow()
