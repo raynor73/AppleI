@@ -19,6 +19,7 @@ public:
 	explicit Cpu6502();
 
 	void clockTick();
+	void reset();
 
 	static const uint8_t NEGATIVE_FLAG_MASK =   0b10000000;
 	static const uint8_t OVERFLOW_FLAG_MASK =   0b01000000;

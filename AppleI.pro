@@ -21,7 +21,10 @@ SOURCES += main.cpp\
     computer/computer.cpp \
     computer/keyboard.cpp \
     cpu6502/memory.cpp \
-    qtkeyboard.cpp
+    qtkeyboard.cpp \
+    computer/display.cpp \
+    qtdisplay.cpp \
+    computer/rom.cpp
 
 HEADERS  += mainwindow.h \
 	cpu6502/cpu6502.h \
@@ -32,6 +35,10 @@ HEADERS  += mainwindow.h \
     computer/device.h \
     computer/computer.h \
     computer/keyboard.h \
-    qtkeyboard.h
+    qtkeyboard.h \
+    computer/display.h \
+    qtdisplay.h \
+    computer/rom.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    mainwindow2.ui

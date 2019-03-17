@@ -14,6 +14,8 @@ protected:
 	bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
+	static const uint8_t ALWAYS_SET_DATA_BITS = 0x80;
+
 	static const uint8_t ASCII_CODE_CR = 0x0D;
 	static const uint8_t ASCII_CODE_ESC = 0x1B;
 
