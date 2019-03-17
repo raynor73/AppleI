@@ -7,8 +7,6 @@
 class Cpu6502
 {
 public:
-	Cpu6502();
-
 	uint8_t a;
 	uint8_t x;
 	uint8_t y;
@@ -17,6 +15,10 @@ public:
 	uint8_t p;
 
 	Memory *memory;
+
+	explicit Cpu6502();
+
+	void clockTick();
 
 	static const uint8_t NEGATIVE_FLAG_MASK =   0b10000000;
 	static const uint8_t OVERFLOW_FLAG_MASK =   0b01000000;

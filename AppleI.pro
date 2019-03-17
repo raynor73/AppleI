@@ -17,7 +17,11 @@ SOURCES += main.cpp\
 	cpu6502/cpu6502.cpp \
 	utils/utils.cpp \
     console.cpp \
-    computer/systembus.cpp
+    computer/systembus.cpp \
+    computer/computer.cpp \
+    computer/keyboard.cpp \
+    cpu6502/memory.cpp \
+    qtkeyboard.cpp
 
 HEADERS  += mainwindow.h \
 	cpu6502/cpu6502.h \
@@ -25,6 +29,9 @@ HEADERS  += mainwindow.h \
 	console.h \
     cpu6502/memory.h \
     computer/systembus.h \
-    computer/device.h
+    computer/device.h \
+    computer/computer.h \
+    computer/keyboard.h \
+    qtkeyboard.h
 
 FORMS    += mainwindow.ui

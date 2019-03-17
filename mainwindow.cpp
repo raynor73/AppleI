@@ -3,8 +3,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "console.h"
-
-//static
+#include "qtkeyboard.h"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -16,8 +15,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	setCentralWidget(consoleWidget);
 
 	QTimer *timer = new QTimer();
-	connect(timer, &QTimer::timeout, [] {
-
+	QtKeyboard *keyboard = new QtKeyboard();
+	Computer *computer = new Computer(keyboard);
+	consoleWidget->installEventFilter(keyboard);
+	connect(timer, &QTimer::timeout, [computer] {
+		computer->clockTick();
 	});
 	timer->start();
 }
