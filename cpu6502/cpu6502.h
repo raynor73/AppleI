@@ -126,6 +126,163 @@ private:
 		result |= memory->readByte((address + 1) & 0xff) << 8;
 		return result;
 	}
+
+	inline uint8_t adc8(const uint8_t arg1, const uint8_t arg2)
+	{
+		if ((p & BCD_FLAG_MASK) == 0)
+		{
+			uint16_t carry = (p & CARRY_FLAG_MASK) != 0 ? 1 : 0;
+			uint16_t result = arg1 + arg2 + carry;
+
+			updateSzFlags(uint8_t(result));
+
+			if (result > 255) {
+				p |= CARRY_FLAG_MASK;
+			} else {
+				p &= ~CARRY_FLAG_MASK;
+			}
+
+			bool isFirstArgPositive = (arg1 & 0x80) == 0;
+			bool isSecondArgPositive = (arg2 & 0x80) == 0;
+			bool isResultPositive = (p & NEGATIVE_FLAG_MASK) == 0;
+			if (isFirstArgPositive && isSecondArgPositive && !isResultPositive) {
+				p |= OVERFLOW_FLAG_MASK;
+			} else if (!isFirstArgPositive && !isSecondArgPositive && isResultPositive) {
+				p |= OVERFLOW_FLAG_MASK;
+			} else {
+				p &= ~OVERFLOW_FLAG_MASK;
+			}
+
+			return uint8_t(result);
+		}
+		else
+		{
+			uint16_t carry = (p & CARRY_FLAG_MASK) != 0 ? 1 : 0;
+			uint16_t binResult = arg1 + arg2 + carry;
+			uint16_t intermediateResult;
+			uint16_t decResult;
+			int16_t signedDecResult;
+
+			if (uint8_t(binResult) == 0)
+			{
+				p |= ZERO_FLAG_MASK;
+			}
+			else
+			{
+				p &= ~ZERO_FLAG_MASK;
+			}
+
+			intermediateResult = (arg1 & 0x0f) + (arg2 & 0x0f) + carry;
+			if (intermediateResult >= 0x0a)
+			{
+				intermediateResult = ((intermediateResult + 0x06) & 0x0f) + 0x10;
+			}
+			decResult = (arg1 & 0xf0) + (arg2 & 0xf0) + intermediateResult;
+			if (decResult >= 0xa0)
+			{
+				decResult += 0x60;
+			}
+			if (decResult >= 0x100)
+			{
+				p |= CARRY_FLAG_MASK;
+			}
+			else
+			{
+				p &= ~CARRY_FLAG_MASK;
+			}
+
+			signedDecResult = (int8_t(arg1) & 0xf0) + (int8_t(arg2) & 0xf0) + int16_t(intermediateResult);
+			if ((signedDecResult & 0x80) != 0)
+			{
+				p |= NEGATIVE_FLAG_MASK;
+			}
+			else
+			{
+				p &= ~NEGATIVE_FLAG_MASK;
+			}
+			if (signedDecResult < -128 || signedDecResult > 127)
+			{
+				p |= OVERFLOW_FLAG_MASK;
+			}
+			else
+			{
+				p &= ~OVERFLOW_FLAG_MASK;
+			}
+
+			return uint8_t(decResult);
+		}
+	}
+
+	inline uint8_t sbc(const uint8_t arg1, const uint8_t arg2)
+	{
+		if ((p & BCD_FLAG_MASK) == 0)
+		{
+			uint16_t borrow = (p & CARRY_FLAG_MASK) != 0 ? 0 : 1;
+			uint16_t arg2WithBorrow = arg2 + borrow;
+			uint16_t result = arg1 - arg2WithBorrow;
+
+			updateSzFlags(uint8_t(result));
+
+			if (arg1 < arg2WithBorrow) {
+				p &= ~CARRY_FLAG_MASK;
+			} else {
+				p |= CARRY_FLAG_MASK;
+			}
+
+			bool isFirstArgPositive = (arg1 & NEGATIVE_FLAG_MASK) == 0;
+			bool isSecondArgPositive = (arg2 & NEGATIVE_FLAG_MASK) == 0;
+			bool isResultPositive = (p & NEGATIVE_FLAG_MASK) == 0;
+			if (isFirstArgPositive && !isSecondArgPositive && !isResultPositive) {
+				p |= OVERFLOW_FLAG_MASK;
+			} else if (!isFirstArgPositive && isSecondArgPositive && isResultPositive) {
+				p |= OVERFLOW_FLAG_MASK;
+			} else {
+				p &= ~OVERFLOW_FLAG_MASK;
+			}
+
+			return uint8_t(result);
+		}
+		else
+		{
+			uint16_t borrow = (p & CARRY_FLAG_MASK) != 0 ? 0 : 1;
+			uint16_t arg2WithBorrow = arg2 + borrow;
+			uint16_t binResult = arg1 - arg2WithBorrow;
+			int16_t decResult;
+			int16_t intermediateResult;
+
+			intermediateResult = (int8_t(arg1) & 0x0f) - (int8_t(arg2) & 0x0f) - int8_t(borrow);
+			if (intermediateResult < 0)
+			{
+				intermediateResult = ((intermediateResult - 0x06) & 0x0f) - 0x10;
+			}
+			decResult = (int8_t(arg1) & 0xf0) - (int8_t(arg2) & 0xf0) + intermediateResult;
+			if (decResult < 0)
+			{
+				decResult -= 0x60;
+			}
+
+			updateSzFlags(uint8_t(binResult));
+
+			if (arg1 < arg2WithBorrow) {
+				p &= ~CARRY_FLAG_MASK;
+			} else {
+				p |= CARRY_FLAG_MASK;
+			}
+
+			bool isFirstArgPositive = (arg1 & NEGATIVE_FLAG_MASK) == 0;
+			bool isSecondArgPositive = (arg2 & NEGATIVE_FLAG_MASK) == 0;
+			bool isResultPositive = (p & NEGATIVE_FLAG_MASK) == 0;
+			if (isFirstArgPositive && !isSecondArgPositive && !isResultPositive) {
+				p |= OVERFLOW_FLAG_MASK;
+			} else if (!isFirstArgPositive && isSecondArgPositive && isResultPositive) {
+				p |= OVERFLOW_FLAG_MASK;
+			} else {
+				p &= ~OVERFLOW_FLAG_MASK;
+			}
+
+			return uint8_t(decResult);
+		}
+	}
 };
 
 #endif // CPU6502_H
