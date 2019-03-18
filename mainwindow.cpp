@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QtDisplay *display = new QtDisplay(consoleWidget);
 	Computer *computer = new Computer(keyboard, display);
 	consoleWidget->installEventFilter(keyboard);
+	timer->setInterval(100);
 	connect(timer, &QTimer::timeout, [computer] {
 		computer->clockTick();
 	});

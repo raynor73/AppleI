@@ -329,6 +329,36 @@ private:
 		return value;
 	}
 
+	inline void bitTest(const uint8_t value)
+	{
+		if ((value & a) == 0)
+		{
+			p |= ZERO_FLAG_MASK;
+		}
+		else
+		{
+			p &= ~ZERO_FLAG_MASK;
+		}
+
+		if ((value & 0x80) != 0)
+		{
+			p |= NEGATIVE_FLAG_MASK;
+		}
+		else
+		{
+			p &= ~NEGATIVE_FLAG_MASK;
+		}
+
+		if ((value & 0x40) != 0)
+		{
+			p |= OVERFLOW_FLAG_MASK;
+		}
+		else
+		{
+			p &= ~OVERFLOW_FLAG_MASK;
+		}
+	}
+
 	static const uint16_t STACK_PAGE = 0x0100;
 };
 

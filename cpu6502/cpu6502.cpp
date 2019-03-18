@@ -41,6 +41,22 @@ void Cpu6502::clockTick()
 		m_operationTime = 6;
 		break;
 
+	case 0x2c:
+		cpuDebug("BIT Absolute");
+		pc++;
+		bitTest(memory->readByte(readWord(pc)));
+		m_operationTime = 4;
+		pc += 2;
+		break;
+
+	case 0x24:
+		cpuDebug("BIT Zero Page");
+		pc++;
+		bitTest(memory->readByte(memory->readByte(pc)));
+		m_operationTime = 3;
+		pc++;
+		break;
+
 	case 0x30:
 		cpuDebug("BMI");
 		pc++;
@@ -80,6 +96,13 @@ void Cpu6502::clockTick()
 		cpuDebug("CLI");
 		p &= ~INTERRUPT_FLAG_MASK;
 		m_operationTime = 2;
+		pc++;
+		break;
+
+	case 0x60:
+		cpuDebug("RTS");
+		pc = popWord();
+		m_operationTime = 6;
 		pc++;
 		break;
 
@@ -514,5 +537,6 @@ void Cpu6502::clockTick()
 void Cpu6502::reset()
 {
 	pc = readWord(0xfffc);
+	p |= INTERRUPT_FLAG_MASK;
 	m_isUndefinedState = false;
 }

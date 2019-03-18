@@ -16,10 +16,28 @@ static uint8_t program[ROM_SIZE] = {
 	0x10, 0x0f,      //          BPL NEXTCHAR
 	0xa9, 0xdc,      //ESCAPE    LDA #$DC
 	0x20, 0xef, 0xff,//          JSR ECHO
+	0xa9, 0x8d,      //GETLINE   LDA #$8d
+	0x20, 0xef, 0xff,//          JSR ECHO
+	0xa0, 0x01,      //          LDY #$01
+	0x88,            //BACKSPACE DEY
+	0x30, 0xf6,      //          BMI GETLINE
+	0xad, 0x11, 0xd0,//NEXTCHAR  LDA KBD CR
+	0x10, 0xfb,      //          BPL NEXTCHAR
+	0xad, 0x10, 0xd0,//          LDA KBD
+	0x99, 0x00, 0x02,//          STA IN, Y
+	0x20, 0xef, 0xff,//          JSR ECHO
+	0xc9, 0x8d,      //          CMP #$8d
+	0xd0, 0xd4,      //          BNE NOTCR
+	0xa0, 0xff,      //          LDY #$ff
+	0xa9, 0x00,      //          LDA #$00
+	0xaa,            //          TAX
+	0x0a,            //SETSTOR   ASL
+
 };
 static uint8_t program_tail[] = {
 	0x2c, 0x12, 0xd0,//ECHO      BIT DSP
-	0x30, 0xfb,      //          BMI ECHO
+	//0x30, 0xfb,      //          BMI ECHO
+	0xea, 0xea,      //          NOP NOP
 	0x8d, 0x12, 0xd0,//          STA DSP
 	0x60,            //          RTS
 	0x00, 0x00,      //(unused)

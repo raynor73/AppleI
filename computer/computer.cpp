@@ -6,6 +6,7 @@ Computer::Computer(Keyboard *keyboard, Display *display)
 	m_systemBus.addDevice(keyboard);
 	m_systemBus.addDevice(display);
 	m_systemBus.addDevice(&m_rom);
+	m_systemBus.addDevice(&m_ram);
 }
 
 void Computer::clockTick()
