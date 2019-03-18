@@ -33,9 +33,6 @@ private:
 	uint8_t m_operationTime;
 	bool m_isUndefinedState;
 
-	uint16_t m_address;
-	uint16_t m_address2;
-
 	inline uint16_t readWord(const uint16_t address) {
 		uint8_t l = memory->readByte(address);
 		uint8_t h = memory->readByte(address + 1);
@@ -79,13 +76,29 @@ private:
 		return memory->readByte(m_address2);
 	}
 
-	inline uint8_t loadIndirectIndexed()
+	inline uint8_t loadIndirectIndexed(const uint8_t baseTime, const bool shouldIncrementTimeOnPageCross)
 	{
 		m_address = memory->readByte(pc);
 		m_address2 = memory->readByte(m_address);
-		m_address2 |= memory->readByte((m_address + 1) & 0xff);
+		m_address2 |= memory->readByte((m_address + 1) & 0xff) << 8;
 		//m_operationTime = (m_address2 & 0xff) + y > 0xff ? 6 : 5;
 		a = memory->readByte(m_address2 + y);
+	}
+
+	inline uint16_t readWord(const uint16_t address)
+	{
+		uint16_t result;
+		result = memory->readByte(address);
+		result |= memory->readByte(address + 1) << 8;
+		return result;
+	}
+
+	inline uint16_t readWordFromZeroPage(const uint8_t address)
+	{
+		uint16_t result;
+		result = memory->readByte(address);
+		result |= memory->readByte((address + 1) & 0xff) << 8;
+		return result;
 	}
 };
 
