@@ -1,7 +1,8 @@
 #include <QDebug>
 #include "rom.h"
 
-static uint8_t program[] = {
+static const uint16_t ROM_SIZE = 0x100;
+static uint8_t program[ROM_SIZE] = {
 	0xd8,            //RESET     CLD
 	0x58,            //          CLI
 	0xa0, 0x7f,      //          LDY #$7f
@@ -12,14 +13,34 @@ static uint8_t program[] = {
 	0xc9, 0xdf,      //NOTCR     CMP #$DF
 	0xf0, 0x03,      //          BEQ ESCAPE
 	0xc8,            //          INY
+	0x10, 0x0f,      //          BPL NEXTCHAR
+	0xa9, 0xdc,      //ESCAPE    LDA #$DC
+	0x20, 0xef, 0xff,//          JSR ECHO
+};
+static uint8_t program_tail[] = {
+	0x2c, 0x12, 0xd0,//ECHO      BIT DSP
+	0x30, 0xfb,      //          BMI ECHO
+	0x8d, 0x12, 0xd0,//          STA DSP
+	0x60,            //          RTS
+	0x00, 0x00,      //(unused)
+	0x00, 0x0f,      //(NMI)
+	0x00, 0xff,      //(RESET)
+	0x00, 0x00       //(IRQ)
 };
 
 Rom::Rom()
 {
-	for (uint16_t i = 0; i < sizeof(program); i++) {
+	for (uint16_t i = 0; i < sizeof(program); i++)
+	{
 		m_rom[i] = program[i];
 	}
 
+	for (uint16_t i = 0; i < sizeof(program_tail); i++)
+	{
+		m_rom[i + sizeof(program) - sizeof(program_tail)] = program_tail[i];
+	}
+
+	/*
 	// NMI vector
 	m_rom[0xfa] = 0x00;
 	m_rom[0xfb] = 0x0f;
@@ -31,6 +52,7 @@ Rom::Rom()
 	// IRQ vector
 	m_rom[0xfe] = 0x00;
 	m_rom[0xff] = 0x00;
+	*/
 }
 
 bool Rom::isUsingAddress(const uint16_t address)

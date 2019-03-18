@@ -12,10 +12,46 @@ void Cpu6502::clockTick()
 
 	uint8_t opcode = memory->readByte(pc);
 	switch (opcode) {
+	case 0x10:
+		cpuDebug("BPL");
+		pc++;
+		if ((p & NEGATIVE_FLAG_MASK) == 0)
+		{
+			branch();
+		}
+		else
+		{
+			m_operationTime = 2;
+		}
+		pc++;
+		break;
+
 	case 0x18:
 		cpuDebug("CLC");
 		p &= ~CARRY_FLAG_MASK;
 		m_operationTime = 2;
+		pc++;
+		break;
+
+	case 0x20:
+		cpuDebug("JSR");
+		pc++;
+		pushWord(pc + 1);
+		pc = readWord(pc);
+		m_operationTime = 6;
+		break;
+
+	case 0x30:
+		cpuDebug("BMI");
+		pc++;
+		if ((p & NEGATIVE_FLAG_MASK) != 0)
+		{
+			branch();
+		}
+		else
+		{
+			m_operationTime = 2;
+		}
 		pc++;
 		break;
 
@@ -26,10 +62,38 @@ void Cpu6502::clockTick()
 		pc++;
 		break;
 
+	case 0x50:
+		cpuDebug("BVC");
+		pc++;
+		if ((p & OVERFLOW_FLAG_MASK) == 0)
+		{
+			branch();
+		}
+		else
+		{
+			m_operationTime = 2;
+		}
+		pc++;
+		break;
+
 	case 0x58:
 		cpuDebug("CLI");
 		p &= ~INTERRUPT_FLAG_MASK;
 		m_operationTime = 2;
+		pc++;
+		break;
+
+	case 0x70:
+		cpuDebug("BVS");
+		pc++;
+		if ((p & OVERFLOW_FLAG_MASK) != 0)
+		{
+			branch();
+		}
+		else
+		{
+			m_operationTime = 2;
+		}
 		pc++;
 		break;
 
@@ -64,6 +128,22 @@ void Cpu6502::clockTick()
 		pc++;
 		break;
 
+	case 0x88:
+		cpuDebug("DEY");
+		y--;
+		updateSzFlags(y);
+		m_operationTime = 2;
+		pc++;
+		break;
+
+	case 0x8a:
+		cpuDebug("TXA");
+		a = x;
+		updateSzFlags(a);
+		m_operationTime = 2;
+		pc++;
+		break;
+
 	case 0x8c:
 		cpuDebug("STY Absolute");
 		pc++;
@@ -78,6 +158,20 @@ void Cpu6502::clockTick()
 		memory->writeByte(readWord(pc), a);
 		m_operationTime = 4;
 		pc += 2;
+		break;
+
+	case 0x90:
+		cpuDebug("BCC");
+		pc++;
+		if ((p & CARRY_FLAG_MASK) == 0)
+		{
+			branch();
+		}
+		else
+		{
+			m_operationTime = 2;
+		}
+		pc++;
 		break;
 
 	case 0x91:
@@ -101,6 +195,14 @@ void Cpu6502::clockTick()
 		pc++;
 		memory->writeByte((memory->readByte(pc) + x) & 0xff, a);
 		m_operationTime = 4;
+		pc++;
+		break;
+
+	case 0x98:
+		cpuDebug("TYA");
+		a = y;
+		updateSzFlags(a);
+		m_operationTime = 2;
 		pc++;
 		break;
 
@@ -156,12 +258,28 @@ void Cpu6502::clockTick()
 		pc++;
 		break;
 
+	case 0xa8:
+		cpuDebug("TAY");
+		y = a;
+		updateSzFlags(y);
+		m_operationTime = 2;
+		pc++;
+		break;
+
 	case 0xa9:
 		cpuDebug("LDA Immediate");
 		pc++;
 		a = memory->readByte(pc);
 		m_operationTime = 2;
 		updateSzFlags(a);
+		pc++;
+		break;
+
+	case 0xaa:
+		cpuDebug("TAX");
+		x = a;
+		updateSzFlags(x);
+		m_operationTime = 2;
 		pc++;
 		break;
 
@@ -181,6 +299,20 @@ void Cpu6502::clockTick()
 		m_operationTime = 4;
 		updateSzFlags(a);
 		pc += 2;
+		break;
+
+	case 0xb0:
+		cpuDebug("BCS");
+		pc++;
+		if ((p & CARRY_FLAG_MASK) != 0)
+		{
+			branch();
+		}
+		else
+		{
+			m_operationTime = 2;
+		}
+		pc++;
 		break;
 
 	case 0xb1:
@@ -240,6 +372,83 @@ void Cpu6502::clockTick()
 		pc += 2;
 		break;
 
+	case 0xc1:
+		cpuDebug("CMP Indirect X");
+		pc++;
+		sbc(a, loadIndirectX(), false);
+		m_operationTime = 6;
+		pc++;
+		break;
+
+	case 0xc5:
+		cpuDebug("CMP Zero Page");
+		pc++;
+		sbc(a, memory->readByte(memory->readByte(pc)), false);
+		m_operationTime = 3;
+		pc++;
+		break;
+
+	case 0xc8:
+		cpuDebug("INY");
+		y++;
+		updateSzFlags(y);
+		m_operationTime = 2;
+		pc++;
+		break;
+
+	case 0xc9:
+		cpuDebug("CMP Immediate");
+		pc++;
+		sbc(a, memory->readByte(pc), false);
+		m_operationTime = 2;
+		pc++;
+		break;
+
+	case 0xca:
+		cpuDebug("DEX");
+		x--;
+		updateSzFlags(x);
+		m_operationTime = 2;
+		pc++;
+		break;
+
+	case 0xcd:
+		cpuDebug("CMP Absolute");
+		pc++;
+		sbc(a, memory->readByte(readWord(pc)), false);
+		m_operationTime = 4;
+		pc += 2;
+		break;
+
+	case 0xd0:
+		cpuDebug("BNE");
+		pc++;
+		if ((p & ZERO_FLAG_MASK) == 0)
+		{
+			branch();
+		}
+		else
+		{
+			m_operationTime = 2;
+		}
+		pc++;
+		break;
+
+	case 0xd1:
+		cpuDebug("CPM Indirect Y");
+		pc++;
+		sbc(a, loadIndirectY(5, true), false);
+		pc++;
+		break;
+
+	case 0xd5:
+		cpuDebug("CMP Zero Page X");
+		pc++;
+		sbc(a, memory->readByte((memory->readByte(pc) + x) & 0xff), false);
+		m_operationTime = 4;
+		pc++;
+		break;
+
 	case 0xd8:
 		cpuDebug("CLD");
 		p &= ~BCD_FLAG_MASK;
@@ -247,9 +456,45 @@ void Cpu6502::clockTick()
 		pc++;
 		break;
 
+	case 0xd9:
+		cpuDebug("CMP Absolute Y");
+		pc++;
+		sbc(a, loadAbsoluteY(4, true), false);
+		pc += 2;
+		break;
+
+	case 0xdd:
+		cpuDebug("CMP Absolute X");
+		pc++;
+		sbc(a, loadAbsoluteX(4, true), false);
+		pc += 2;
+		break;
+
+	case 0xe8:
+		cpuDebug("INX");
+		x++;
+		updateSzFlags(x);
+		m_operationTime = 2;
+		pc++;
+		break;
+
 	case 0xea:
 		cpuDebug("NOP");
 		m_operationTime = 2;
+		pc++;
+		break;
+
+	case 0xf0:
+		cpuDebug("BEQ");
+		pc++;
+		if ((p & ZERO_FLAG_MASK) != 0)
+		{
+			branch();
+		}
+		else
+		{
+			m_operationTime = 2;
+		}
 		pc++;
 		break;
 

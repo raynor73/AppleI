@@ -213,7 +213,7 @@ private:
 		}
 	}
 
-	inline uint8_t sbc(const uint8_t arg1, const uint8_t arg2)
+	inline uint8_t sbc(const uint8_t arg1, const uint8_t arg2, const bool shouldUpdateOverflowFlag)
 	{
 		if ((p & BCD_FLAG_MASK) == 0)
 		{
@@ -229,15 +229,18 @@ private:
 				p |= CARRY_FLAG_MASK;
 			}
 
-			bool isFirstArgPositive = (arg1 & NEGATIVE_FLAG_MASK) == 0;
-			bool isSecondArgPositive = (arg2 & NEGATIVE_FLAG_MASK) == 0;
-			bool isResultPositive = (p & NEGATIVE_FLAG_MASK) == 0;
-			if (isFirstArgPositive && !isSecondArgPositive && !isResultPositive) {
-				p |= OVERFLOW_FLAG_MASK;
-			} else if (!isFirstArgPositive && isSecondArgPositive && isResultPositive) {
-				p |= OVERFLOW_FLAG_MASK;
-			} else {
-				p &= ~OVERFLOW_FLAG_MASK;
+			if (shouldUpdateOverflowFlag)
+			{
+				bool isFirstArgPositive = (arg1 & NEGATIVE_FLAG_MASK) == 0;
+				bool isSecondArgPositive = (arg2 & NEGATIVE_FLAG_MASK) == 0;
+				bool isResultPositive = (p & NEGATIVE_FLAG_MASK) == 0;
+				if (isFirstArgPositive && !isSecondArgPositive && !isResultPositive) {
+					p |= OVERFLOW_FLAG_MASK;
+				} else if (!isFirstArgPositive && isSecondArgPositive && isResultPositive) {
+					p |= OVERFLOW_FLAG_MASK;
+				} else {
+					p &= ~OVERFLOW_FLAG_MASK;
+				}
 			}
 
 			return uint8_t(result);
@@ -269,20 +272,64 @@ private:
 				p |= CARRY_FLAG_MASK;
 			}
 
-			bool isFirstArgPositive = (arg1 & NEGATIVE_FLAG_MASK) == 0;
-			bool isSecondArgPositive = (arg2 & NEGATIVE_FLAG_MASK) == 0;
-			bool isResultPositive = (p & NEGATIVE_FLAG_MASK) == 0;
-			if (isFirstArgPositive && !isSecondArgPositive && !isResultPositive) {
-				p |= OVERFLOW_FLAG_MASK;
-			} else if (!isFirstArgPositive && isSecondArgPositive && isResultPositive) {
-				p |= OVERFLOW_FLAG_MASK;
-			} else {
-				p &= ~OVERFLOW_FLAG_MASK;
+			if (shouldUpdateOverflowFlag)
+			{
+				bool isFirstArgPositive = (arg1 & NEGATIVE_FLAG_MASK) == 0;
+				bool isSecondArgPositive = (arg2 & NEGATIVE_FLAG_MASK) == 0;
+				bool isResultPositive = (p & NEGATIVE_FLAG_MASK) == 0;
+				if (isFirstArgPositive && !isSecondArgPositive && !isResultPositive) {
+					p |= OVERFLOW_FLAG_MASK;
+				} else if (!isFirstArgPositive && isSecondArgPositive && isResultPositive) {
+					p |= OVERFLOW_FLAG_MASK;
+				} else {
+					p &= ~OVERFLOW_FLAG_MASK;
+				}
 			}
 
 			return uint8_t(decResult);
 		}
 	}
+
+	inline void branch()
+	{
+		uint16_t address = uint16_t(pc + int8_t(memory->readByte(pc)));
+		if (((pc + 1) & 0xff00) == (address & 0xff00))
+		{
+			m_operationTime = 3;
+		}
+		else {
+			m_operationTime = 4;
+		}
+		pc = address;
+	}
+
+	inline void pushByte(const uint8_t value)
+	{
+		memory->writeByte(sp | STACK_PAGE, value);
+		sp++;
+	}
+
+	inline uint8_t popByte()
+	{
+		sp--;
+		return memory->readByte(sp | STACK_PAGE);
+	}
+
+	inline void pushWord(const uint16_t value)
+	{
+		pushByte(value >> 8);
+		pushByte(uint8_t(value));
+	}
+
+	inline uint16_t popWord()
+	{
+		uint16_t value;
+		value = popByte();
+		value |= popByte() << 8;
+		return value;
+	}
+
+	static const uint16_t STACK_PAGE = 0x0100;
 };
 
 #endif // CPU6502_H
