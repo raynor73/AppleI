@@ -16,7 +16,7 @@ uint8_t SystemBus::readByte(const uint16_t address)
 		}
 	}
 
-	qDebug() << "No device found to read from address:" << hex << address;
+	qDebug("No device found to read from address: 0x%04x", address);
 
 	return 0;
 }
@@ -32,5 +32,5 @@ void SystemBus::writeByte(const uint16_t address, const uint8_t value)
 		}
 	}
 
-	qDebug() << "No device found to write to address:" << hex << address << "value" << hex << value;
+	qDebug("No device found to write to address: 0x%04x value: 0x%02x", address, value);
 }

@@ -1,8 +1,25 @@
 #include <QDebug>
 #include "rom.h"
 
+static uint8_t program[] = {
+	0xd8,            //RESET     CLD
+	0x58,            //          CLI
+	0xa0, 0x7f,      //          LDY #$7f
+	0x8c, 0x12, 0xd0,//          STY DSP
+	0xa9, 0xa7,      //          LDA #$a7
+	0x8d, 0x11, 0xd0,//          STA KBD CR
+	0x8d, 0x13, 0xd0,//          STA DSP CR
+	0xc9, 0xdf,      //NOTCR     CMP #$DF
+	0xf0, 0x03,      //          BEQ ESCAPE
+	0xc8,            //          INY
+};
+
 Rom::Rom()
 {
+	for (uint16_t i = 0; i < sizeof(program); i++) {
+		m_rom[i] = program[i];
+	}
+
 	// NMI vector
 	m_rom[0xfa] = 0x00;
 	m_rom[0xfb] = 0x0f;

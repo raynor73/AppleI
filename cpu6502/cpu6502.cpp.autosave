@@ -11,8 +11,6 @@ void Cpu6502::clockTick()
 	}
 
 	uint8_t opcode = memory->readByte(pc);
-	uint16_t address;
-	uint16_t address2;
 	switch (opcode) {
 	case 0x18:
 		cpuDebug("CLC");

@@ -38,7 +38,8 @@ HEADERS  += mainwindow.h \
     qtkeyboard.h \
     computer/display.h \
     qtdisplay.h \
-    computer/rom.h
+    computer/rom.h \
+    utils/debug.h
 
 FORMS    += mainwindow.ui \
     mainwindow2.ui

@@ -28,6 +28,65 @@ public:
 	static const uint8_t INTERRUPT_FLAG_MASK =  0b00000100;
 	static const uint8_t ZERO_FLAG_MASK =       0b00000010;
 	static const uint8_t CARRY_FLAG_MASK =      0b00000001;
+
+private:
+	uint8_t m_operationTime;
+	bool m_isUndefinedState;
+
+	uint16_t m_address;
+	uint16_t m_address2;
+
+	inline uint16_t readWord(const uint16_t address) {
+		uint8_t l = memory->readByte(address);
+		uint8_t h = memory->readByte(address + 1);
+		return (h << 8) | l;
+	}
+
+	inline void updateSzFlags(const uint8_t value)
+	{
+		if ((value & 0x80) != 0)
+		{
+			p |= NEGATIVE_FLAG_MASK;
+		}
+		else
+		{
+			p &= ~NEGATIVE_FLAG_MASK;
+		}
+
+		if (value == 0)
+		{
+			p |= ZERO_FLAG_MASK;
+		}
+		else
+		{
+			p &= ~ZERO_FLAG_MASK;
+		}
+	}
+
+	inline void storeIndexedIndirect(const uint8_t value)
+	{
+		m_address = (memory->readByte(pc) + x) & 0xff;
+		m_address2 = memory->readByte(address);
+		m_address2 |= memory->readByte(address + 1) << 8;
+		memory->writeByte(address2, value);
+	}
+
+	inline uint8_t loadIndexedIndirect()
+	{
+		m_address = (memory->readByte(pc) + x) & 0xff;
+		m_address2 = memory->readByte(m_address);
+		m_address2 |= memory->readByte(m_address + 1) << 8;
+		return memory->readByte(m_address2);
+	}
+
+	inline uint8_t loadIndirectIndexed()
+	{
+		m_address = memory->readByte(pc);
+		m_address2 = memory->readByte(m_address);
+		m_address2 |= memory->readByte((m_address + 1) & 0xff);
+		//m_operationTime = (m_address2 & 0xff) + y > 0xff ? 6 : 5;
+		a = memory->readByte(m_address2 + y);
+	}
 };
 
 #endif // CPU6502_H
