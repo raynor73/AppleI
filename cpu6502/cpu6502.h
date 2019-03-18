@@ -33,12 +33,6 @@ private:
 	uint8_t m_operationTime;
 	bool m_isUndefinedState;
 
-	inline uint16_t readWord(const uint16_t address) {
-		uint8_t l = memory->readByte(address);
-		uint8_t h = memory->readByte(address + 1);
-		return (h << 8) | l;
-	}
-
 	inline void updateSzFlags(const uint8_t value)
 	{
 		if ((value & 0x80) != 0)
@@ -60,29 +54,61 @@ private:
 		}
 	}
 
-	inline void storeIndexedIndirect(const uint8_t value)
+	inline void storeIndirectX(const uint8_t value)
 	{
-		m_address = (memory->readByte(pc) + x) & 0xff;
-		m_address2 = memory->readByte(address);
-		m_address2 |= memory->readByte(address + 1) << 8;
-		memory->writeByte(address2, value);
+		memory->writeByte(readWordFromZeroPage(memory->readByte(pc) + x), value);
 	}
 
-	inline uint8_t loadIndexedIndirect()
+	inline uint8_t loadIndirectX()
 	{
-		m_address = (memory->readByte(pc) + x) & 0xff;
-		m_address2 = memory->readByte(m_address);
-		m_address2 |= memory->readByte(m_address + 1) << 8;
-		return memory->readByte(m_address2);
+		return memory->readByte(readWordFromZeroPage(memory->readByte(pc) + x));
 	}
 
-	inline uint8_t loadIndirectIndexed(const uint8_t baseTime, const bool shouldIncrementTimeOnPageCross)
+	inline void storeIndirectY(const uint8_t value)
 	{
-		m_address = memory->readByte(pc);
-		m_address2 = memory->readByte(m_address);
-		m_address2 |= memory->readByte((m_address + 1) & 0xff) << 8;
-		//m_operationTime = (m_address2 & 0xff) + y > 0xff ? 6 : 5;
-		a = memory->readByte(m_address2 + y);
+		memory->writeByte(readWordFromZeroPage(memory->readByte(pc)) + y, value);
+	}
+
+	inline uint8_t loadIndirectY(const uint8_t baseTime, const bool shouldIncrementTimeOnPageCross)
+	{
+		uint16_t address = readWordFromZeroPage(memory->readByte(pc));
+		if (shouldIncrementTimeOnPageCross)
+		{
+			m_operationTime = (address & 0xff) + y > 0xff ? (baseTime + 1) : baseTime;
+		}
+		else
+		{
+			m_operationTime = baseTime;
+		}
+		return  memory->readByte(address + y);
+	}
+
+	inline uint8_t loadAbsoluteX(const uint8_t baseTime, const bool shouldIncrementTimeOnPageCross)
+	{
+		uint16_t address = readWord(pc);
+		if (shouldIncrementTimeOnPageCross)
+		{
+			m_operationTime = (address & 0xff) + x > 0xff ? (baseTime + 1) : baseTime;
+		}
+		else
+		{
+			m_operationTime = baseTime;
+		}
+		return  memory->readByte(address + x);
+	}
+
+	inline uint8_t loadAbsoluteY(const uint8_t baseTime, const bool shouldIncrementTimeOnPageCross)
+	{
+		uint16_t address = readWord(pc);
+		if (shouldIncrementTimeOnPageCross)
+		{
+			m_operationTime = (address & 0xff) + y > 0xff ? (baseTime + 1) : baseTime;
+		}
+		else
+		{
+			m_operationTime = baseTime;
+		}
+		return  memory->readByte(address + y);
 	}
 
 	inline uint16_t readWord(const uint16_t address)
