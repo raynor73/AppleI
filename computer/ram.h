@@ -6,6 +6,8 @@
 class Ram : public Device
 {
 public:
+	explicit Ram();
+
 	virtual bool isUsingAddress(const uint16_t address) override;
 	virtual uint8_t readByte(const uint16_t address) override;
 	virtual void writeByte(const uint16_t address, const uint8_t value) override;

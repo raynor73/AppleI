@@ -9,7 +9,7 @@ QString formatCpuState(const Cpu6502 &cpu)
 	int interruptFlag = (cpu.p & Cpu6502::INTERRUPT_FLAG_MASK) != 0 ? 1 : 0;
 	int zeroFlag = (cpu.p & Cpu6502::ZERO_FLAG_MASK) != 0 ? 1 : 0;
 	int carryFlag = (cpu.p & Cpu6502::CARRY_FLAG_MASK) != 0 ? 1 : 0;
-	return QString(" A: 0x  %1\n X: 0x  %2\n Y: 0x  %3\nSP: 0x%4\nPC: 0x%5\nFlags: N:%6 V:%7 B:%8 D:%9 I:%10 Z:%11 C:%12\n")
+	return QString(" A: 0x  %1\n X: 0x  %2\n Y: 0x  %3\nSP: 0x%4\nPC: 0x%5\nFlags: N:%6 V:%7 B:%8 D:%9 I:%10 Z:%11 C:%12")
 			.arg(cpu.a, 2, 16, QLatin1Char('0'))
 			.arg(cpu.x, 2, 16, QLatin1Char('0'))
 			.arg(cpu.y, 2, 16, QLatin1Char('0'))

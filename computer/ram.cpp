@@ -1,6 +1,21 @@
 #include <QDebug>
 #include "ram.h"
 
+/*static uint8_t program[] = {
+	0xa9, 0x00, 0xaa, 0x20, 0xef, 0xff, 0xe8, 0x8a, 0x4c, 0x02, 0x00
+};*/
+static uint8_t program[] = {
+	0xa9, 0xab, 0x20, 0xdc, 0xff, 0x00
+};
+
+Ram::Ram()
+{
+	/*for (uint16_t i = 0; i < sizeof(program); i++)
+	{
+		m_ram[i] = program[i];
+	}*/
+}
+
 bool Ram::isUsingAddress(const uint16_t address)
 {
 	return address <= HIGHER_ADDRESS;

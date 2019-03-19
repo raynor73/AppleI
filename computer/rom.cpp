@@ -106,7 +106,7 @@ static uint8_t program[] = {
 	0xe5, 0x29,      //           SBC H
 	0xb0, 0xc1,      //           BCS TONEXTITEM
 	0xe6, 0x24,      //           INC XAML
-	0xd0, 0xf2,      //           BNE MOD8CHK
+	0xd0, 0x02,      //           BNE MOD8CHK
 	0xe6, 0x25,      //           INC XAML
 	0xa5, 0x24,      //MOD8CHK....LDA XAML
 	0x29, 0x07,      //           AND #$07
@@ -119,7 +119,7 @@ static uint8_t program[] = {
 	0x20, 0xe5, 0xff,//           JSR PRHEX
 	0x68,            //           PLA
 	0x29, 0x0f,      //           AND #$0f
-	0x09, 0x0b,      //           ORA #$b0
+	0x09, 0xb0,      //           ORA #$b0
 	0xc9, 0xba,      //           CMP #$ba
 	0x90, 0x02,      //           BCC ECHO
 	0x69, 0x06,      //           ADC #$06
@@ -130,6 +130,7 @@ static uint8_t program[] = {
 	0x00, 0x00,      //(unused)
 	0x00, 0x0f,      //(NMI)
 	0x00, 0xff,      //(RESET)
+	//0x00, 0x00,      //(RESET)
 	0x00, 0x00       //(IRQ)
 };
 /*static uint8_t program_tail[] = {
