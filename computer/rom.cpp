@@ -11,6 +11,8 @@ static uint8_t program[ROM_SIZE] = {
 	0x8d, 0x11, 0xd0,//          STA KBD CR
 	0x8d, 0x13, 0xd0,//          STA DSP CR
 	0xc9, 0xdf,      //NOTCR     CMP #$DF
+	0xf0, 0x13,      //          BEQ BACKSPACE
+	0xc9, 0x9b,      //          CMP #$9b
 	0xf0, 0x03,      //          BEQ ESCAPE
 	0xc8,            //          INY
 	0x10, 0x0f,      //          BPL NEXTCHAR
@@ -32,6 +34,64 @@ static uint8_t program[ROM_SIZE] = {
 	0xa9, 0x00,      //          LDA #$00
 	0xaa,            //          TAX
 	0x0a,            //SETSTOR   ASL
+	0x85, 0x2b,      //SETMODE   STA MODE
+	0xc8,            //BLSKIP    INY
+	0xb9, 0x00, 0x02,//NEXT ITEM LDA IN, Y
+	0xc9, 0x8d,      //          CMP #8d
+	0xf0, 0xd4,      //          BEQ GETLINE
+	0xc9, 0xae,      //          CMP #$ae
+	0x90, 0xf4,      //          BCC BLSKIP
+	0xf0, 0xf0,      //          BEQ SETMODE
+	0xc9, 0xba,      //          CMP #$ba
+	0xf0, 0xeb,      //          BEQ SETSTOR
+	0xc9, 0xd2,      //          CMP #$d2
+	0xf0, 0x3b,      //          BEQ RUN
+	0x86, 0x28,      //          STX L
+	0x86, 0x29,      //          STX H
+	0x84, 0x2a,      //          STY YSAV
+	0xb9, 0x00, 0x02,//NEXTHEX   LDA IN, Y
+	0x49, 0xb0,      //          EOR #$b0
+	0xc9, 0x0a,      //          CMP #$0a
+	0x90, 0x06,      //          BCC DIG
+	0x69, 0x88,      //          ADC #$88
+	0xc9, 0xfa,      //          CMP #$fa
+	0x90, 0x11,      //           BCC NOTHEX
+	0x0a,            //DIG        ASL
+	0x0a,            //           ASL
+	0x0a,            //           ASL
+	0x0a,            //           ASL
+	0xa2, 0x04,      //           LDX #$04
+	0x0a,            //HEXSHIFT   ASL
+	0x26, 0x28,      //           ROL L
+	0x26, 0x29,      //           ROL H
+	0xca,            //           DEX
+	0xd0, 0xf8,      //           BNE HEXSHIFT
+	0xc8,            //           INY
+	0xd0, 0xe0,      //           BNE NEXTHEX
+	0xc4, 0x2a,      //NOTHEX     CPY YSAV
+	0xf0, 0x97,      //           BEQ ESCAPE
+	0x24, 0x2b,      //           BIT MODE
+	0x50, 0x10,      //           BVC NOTSTOR
+	0xa5, 0x28,      //           LDA L
+	0x81, 0x26,      //           STA (STL, X)
+	0xe6, 0x26,      //           INC STL
+	0xd0, 0xb5,      //           BNE NEXTITEM
+	0xe6, 0x27,      //           INC STH
+	0x4c, 0x44, 0xff,//TONEXTITEM JMP NEXTITEM
+	0x6c, 0x24, 0x00,//RUN        JMP (XAML)
+	0x30, 0x2b,      //NOTSTOR    BMI XAMNEXT
+	0xa2, 0x02,      //           LDX #$02
+	0xb5, 0x27,      //SETADR     LDA L-1, X
+	0x95, 0x25,      //           STA STL-1, X
+	0x95, 0x23,      //           STA XAML-1, X
+	0xca,            //           DEX
+	0xd0, 0xf7,      //           BNE SETADR
+	0xd0, 0x14,      //NXTPRNT    BNE PRDATA
+	0xa9, 0x8d,      //           LDA #$8d
+	0x20, 0xef, 0xff,//           JSR ECHO
+	0xa5, 0x25,      //           LDA XAMH
+	0x20, 0xdc, 0xff,//           JSR PRBYTE
+	0xa5, 0x24,      //           LDA XAML
 
 };
 static uint8_t program_tail[] = {

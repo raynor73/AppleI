@@ -359,6 +359,44 @@ private:
 		}
 	}
 
+	inline uint8_t asl(const uint8_t value)
+	{
+		if ((value & 0x80) != 0)
+		{
+			p |= CARRY_FLAG_MASK;
+		}
+		else
+		{
+			p &= ~CARRY_FLAG_MASK;
+		}
+		uint8_t result = value << 1;
+		updateSzFlags(result);
+		return result;
+	}
+
+	inline void eor(const uint8_t value)
+	{
+		a ^= value;
+		updateSzFlags(a);
+	}
+
+	inline uint8_t rol(const uint8_t value)
+	{
+		uint8_t oldCarry = (p & CARRY_FLAG_MASK) != 0 ? 1 : 0;
+		if ((value & 0x80) != 0)
+		{
+			p |= CARRY_FLAG_MASK;
+		}
+		else
+		{
+			p &= ~CARRY_FLAG_MASK;
+		}
+		uint8_t result = value << 1;
+		result |= oldCarry;
+		updateSzFlags(result);
+		return result;
+	}
+
 	static const uint16_t STACK_PAGE = 0x0100;
 };
 
