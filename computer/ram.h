@@ -13,7 +13,8 @@ public:
 	virtual void writeByte(const uint16_t address, const uint8_t value) override;
 
 private:
-	uint8_t m_ram[4096];
+	//uint8_t m_ram[4096];
+	uint8_t m_ram[65536];
 
 	//static const uint16_t LOWER_ADDRESS = 0x0000;
 	static const uint16_t HIGHER_ADDRESS = 0x0fff;

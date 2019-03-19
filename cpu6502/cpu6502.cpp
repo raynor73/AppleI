@@ -2,7 +2,9 @@
 #include "cpu6502.h"
 #include "utils/debug.h"
 
-Cpu6502::Cpu6502() : m_isUndefinedState(false) {}
+Cpu6502::Cpu6502() : m_isUndefinedState(false) {
+	pc = 0x400;
+}
 
 void Cpu6502::clockTick()
 {
