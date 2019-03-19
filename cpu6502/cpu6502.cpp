@@ -15,12 +15,66 @@ void Cpu6502::clockTick()
 	uint16_t address2;
 	uint8_t value;
 	switch (opcode) {
+	case 0x01:
+		cpuDebug("ORA Indirect X");
+		pc++;
+		_or(loadIndirectX());
+		m_operationTime = 6;
+		pc++;
+		break;
+
+	case 0x05:
+		cpuDebug("ORA Zero Page");
+		pc++;
+		_or(memory->readByte(memory->readByte(pc)));
+		m_operationTime = 3;
+		pc++;
+		break;
+
 	case 0x06:
 		cpuDebug("ASL Zero Page");
 		pc++;
 		address = memory->readByte(pc);
 		memory->writeByte(address, asl(memory->readByte(address)));
 		m_operationTime = 5;
+		pc++;
+		break;
+
+	case 0x08:
+		cpuDebug("PHP");
+		pushByte(p);
+		m_operationTime = 3;
+		pc++;
+		break;
+
+	case 0x09:
+		cpuDebug("ORA Immediate");
+		pc++;
+		_or(memory->readByte(pc));
+		m_operationTime = 2;
+		pc++;
+		break;
+
+	case 0x0d:
+		cpuDebug("ORA Absolute");
+		pc++;
+		_or(memory->readByte(readWord(pc)));
+		m_operationTime = 4;
+		pc += 2;
+		break;
+
+	case 0x11:
+		cpuDebug("ORA Indirect Y");
+		pc++;
+		_or(loadIndirectY(5, true));
+		pc++;
+		break;
+
+	case 0x15:
+		cpuDebug("ORA Zero Page X");
+		pc++;
+		_or(memory->readByte((memory->readByte(pc) + x) & 0xff));
+		m_operationTime = 4;
 		pc++;
 		break;
 
@@ -70,6 +124,20 @@ void Cpu6502::clockTick()
 		pc++;
 		break;
 
+	case 0x19:
+		cpuDebug("ORA Absolute Y");
+		pc++;
+		_or(loadAbsoluteY(4, true));
+		pc += 2;
+		break;
+
+	case 0x1d:
+		cpuDebug("ORA Absolute X");
+		pc++;
+		_or(loadAbsoluteX(4, true));
+		pc += 2;
+		break;
+
 	case 0x1e:
 		cpuDebug("ASL Absolute X");
 		pc++;
@@ -87,10 +155,26 @@ void Cpu6502::clockTick()
 		m_operationTime = 6;
 		break;
 
+	case 0x21:
+		cpuDebug("AND Indirect X");
+		pc++;
+		_and(loadIndirectX());
+		m_operationTime = 6;
+		pc++;
+		break;
+
 	case 0x24:
 		cpuDebug("BIT Zero Page");
 		pc++;
 		bitTest(memory->readByte(memory->readByte(pc)));
+		m_operationTime = 3;
+		pc++;
+		break;
+
+	case 0x25:
+		cpuDebug("AND Zero Page");
+		pc++;
+		_and(memory->readByte(memory->readByte(pc)));
 		m_operationTime = 3;
 		pc++;
 		break;
@@ -101,6 +185,21 @@ void Cpu6502::clockTick()
 		address = memory->readByte(pc);
 		memory->writeByte(address, rol(memory->readByte(address)));
 		m_operationTime = 5;
+		pc++;
+		break;
+
+	case 0x28:
+		cpuDebug("PLP");
+		p = popByte();
+		m_operationTime = 4;
+		pc++;
+		break;
+
+	case 0x29:
+		cpuDebug("AND Immediate");
+		pc++;
+		_and(memory->readByte(pc));
+		m_operationTime = 2;
 		pc++;
 		break;
 
@@ -115,6 +214,14 @@ void Cpu6502::clockTick()
 		cpuDebug("BIT Absolute");
 		pc++;
 		bitTest(memory->readByte(readWord(pc)));
+		m_operationTime = 4;
+		pc += 2;
+		break;
+
+	case 0x2d:
+		cpuDebug("AND Absolute");
+		pc++;
+		_and(memory->readByte(readWord(pc)));
 		m_operationTime = 4;
 		pc += 2;
 		break;
@@ -142,6 +249,21 @@ void Cpu6502::clockTick()
 		pc++;
 		break;
 
+	case 0x31:
+		cpuDebug("AND Indirect Y");
+		pc++;
+		_and(loadIndirectY(5, true));
+		pc++;
+		break;
+
+	case 0x35:
+		cpuDebug("AND Zero Page X");
+		pc++;
+		_and(memory->readByte((memory->readByte(pc) + x) & 0xff));
+		m_operationTime = 4;
+		pc++;
+		break;
+
 	case 0x36:
 		cpuDebug("ROL Zero Page X");
 		pc++;
@@ -156,6 +278,20 @@ void Cpu6502::clockTick()
 		p |= CARRY_FLAG_MASK;
 		m_operationTime = 2;
 		pc++;
+		break;
+
+	case 0x39:
+		cpuDebug("AND Absolute Y");
+		pc++;
+		_and(loadAbsoluteY(4, true));
+		pc += 2;
+		break;
+
+	case 0x3d:
+		cpuDebug("AND Absolute X");
+		pc++;
+		_and(loadAbsoluteX(4, true));
+		pc += 2;
 		break;
 
 	case 0x3e:
@@ -183,10 +319,33 @@ void Cpu6502::clockTick()
 		pc++;
 		break;
 
+	case 0x46:
+		cpuDebug("LSR Zero Page");
+		pc++;
+		address = memory->readByte(pc);
+		memory->writeByte(address, lsr(memory->readByte(address)));
+		m_operationTime = 5;
+		pc++;
+		break;
+
+	case 0x48:
+		cpuDebug("PHA");
+		pushByte(a);
+		m_operationTime = 3;
+		pc++;
+		break;
+
 	case 0x49:
 		cpuDebug("EOR Immediate");
 		pc++;
 		eor(memory->readByte(pc));
+		m_operationTime = 2;
+		pc++;
+		break;
+
+	case 0x4a:
+		cpuDebug("LSR Accumulator");
+		a = lsr(a);
 		m_operationTime = 2;
 		pc++;
 		break;
@@ -203,6 +362,15 @@ void Cpu6502::clockTick()
 		pc++;
 		eor(memory->readByte(readWord(pc)));
 		m_operationTime = 4;
+		pc += 2;
+		break;
+
+	case 0x4e:
+		cpuDebug("LSR Absolute");
+		pc++;
+		address = readWord(pc);
+		memory->writeByte(address, lsr(memory->readByte(address)));
+		m_operationTime = 6;
 		pc += 2;
 		break;
 
@@ -236,6 +404,15 @@ void Cpu6502::clockTick()
 		pc++;
 		break;
 
+	case 0x56:
+		cpuDebug("LSR Zero Page X");
+		pc++;
+		address = (memory->readByte(pc) + x) & 0xff;
+		memory->writeByte(address, lsr(memory->readByte(address)));
+		m_operationTime = 6;
+		pc++;
+		break;
+
 	case 0x58:
 		cpuDebug("CLI");
 		p &= ~INTERRUPT_FLAG_MASK;
@@ -254,6 +431,15 @@ void Cpu6502::clockTick()
 		cpuDebug("EOR Absolute X");
 		pc++;
 		eor(loadAbsoluteX(4, true));
+		pc += 2;
+		break;
+
+	case 0x5e:
+		cpuDebug("LSR Absolute X");
+		pc++;
+		address = readWord(pc) + x;
+		memory->writeByte(address, lsr(memory->readByte(address)));
+		m_operationTime = 7;
 		pc += 2;
 		break;
 
@@ -280,9 +466,16 @@ void Cpu6502::clockTick()
 		pc++;
 		break;
 
+	case 0x68:
+		cpuDebug("PLA");
+		a = popByte();
+		m_operationTime = 4;
+		pc++;
+		break;
+
 	case 0x69:
 		cpuDebug("ADC Immediate");
-		p++;
+		pc++;
 		a = adc8(a, memory->readByte(pc));
 		m_operationTime = 2;
 		pc++;
@@ -494,6 +687,13 @@ void Cpu6502::clockTick()
 		pc += 2;
 		break;
 
+	case 0x9a:
+		cpuDebug("TXS");
+		sp = x;
+		m_operationTime = 2;
+		pc++;
+		break;
+
 	case 0x9d:
 		cpuDebug("STA Absolute X");
 		pc++;
@@ -672,6 +872,13 @@ void Cpu6502::clockTick()
 		pc += 2;
 		break;
 
+	case 0xba:
+		cpuDebug("TSX");
+		x = sp;
+		m_operationTime = 2;
+		pc++;
+		break;
+
 	case 0xbc:
 		cpuDebug("LDY Absolute X");
 		pc++;
@@ -818,6 +1025,22 @@ void Cpu6502::clockTick()
 		pc += 2;
 		break;
 
+	case 0xe1:
+		cpuDebug("SBC Indirect X");
+		pc++;
+		a = sbc(a, loadIndirectX(), true);
+		m_operationTime = 6;
+		pc++;
+		break;
+
+	case 0xe5:
+		cpuDebug("SBC Zero Page");
+		pc++;
+		a = sbc(a, memory->readByte(memory->readByte(pc)), true);
+		m_operationTime = 3;
+		pc++;
+		break;
+
 	case 0xe6:
 		cpuDebug("INC Zero Page");
 		pc++;
@@ -837,10 +1060,26 @@ void Cpu6502::clockTick()
 		pc++;
 		break;
 
+	case 0xe9:
+		cpuDebug("SBC Immediate");
+		pc++;
+		a = sbc(a, memory->readByte(pc), true);
+		m_operationTime = 2;
+		pc++;
+		break;
+
 	case 0xea:
 		cpuDebug("NOP");
 		m_operationTime = 2;
 		pc++;
+		break;
+
+	case 0xed:
+		cpuDebug("SBC Absolute");
+		pc++;
+		a = sbc(a, memory->readByte(readWord(pc)), true);
+		m_operationTime = 4;
+		pc += 2;
 		break;
 
 	case 0xee:
@@ -868,6 +1107,21 @@ void Cpu6502::clockTick()
 		pc++;
 		break;
 
+	case 0xf1:
+		cpuDebug("SBC Indirect Y");
+		pc++;
+		a = sbc(a, loadIndirectY(5, true), true);
+		pc++;
+		break;
+
+	case 0xf5:
+		cpuDebug("SBC Zero Page X");
+		pc++;
+		a = sbc(a, memory->readByte((memory->readByte(pc) + x) & 0xff), true);
+		m_operationTime = 4;
+		pc++;
+		break;
+
 	case 0xf6:
 		cpuDebug("INC Zero Page X");
 		pc++;
@@ -884,6 +1138,20 @@ void Cpu6502::clockTick()
 		p |= BCD_FLAG_MASK;
 		m_operationTime = 2;
 		pc++;
+		break;
+
+	case 0xf9:
+		cpuDebug("SBC Absolute Y");
+		pc++;
+		a = sbc(a, loadAbsoluteY(4, true), true);
+		pc += 2;
+		break;
+
+	case 0xfd:
+		cpuDebug("SBC Absolute X");
+		pc++;
+		a = sbc(a, loadAbsoluteX(4, true), true);
+		pc += 2;
 		break;
 
 	case 0xfe:

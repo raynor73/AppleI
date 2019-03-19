@@ -1,8 +1,8 @@
 #include <QDebug>
 #include "rom.h"
 
-static const uint16_t ROM_SIZE = 0x100;
-static uint8_t program[ROM_SIZE] = {
+//static const uint16_t ROM_SIZE = 0x100;
+static uint8_t program[] = {
 	0xd8,            //RESET     CLD
 	0x58,            //          CLI
 	0xa0, 0x7f,      //          LDY #$7f
@@ -92,9 +92,47 @@ static uint8_t program[ROM_SIZE] = {
 	0xa5, 0x25,      //           LDA XAMH
 	0x20, 0xdc, 0xff,//           JSR PRBYTE
 	0xa5, 0x24,      //           LDA XAML
-
+	0x20, 0xdc, 0xff,//           JSR PRBYTE
+	0xa9, 0xba,      //           LDA #$ba
+	0x20, 0xef, 0xff,//           JSR ECHO
+	0xa9, 0xa0,      //PRDATA     LDA #$a0
+	0x20, 0xef, 0xff,//           JSR ECHO
+	0xa1, 0x24,      //           LDA (XAML, X)
+	0x20, 0xdc, 0xff,//           JSR PRBYTE
+	0x86, 0x2b,      //XAMNEXT    STX MODE
+	0xa5, 0x24,      //           LDA XAML
+	0xc5, 0x28,      //           CMP L
+	0xa5, 0x25,      //           LDA XAMH
+	0xe5, 0x29,      //           SBC H
+	0xb0, 0xc1,      //           BCS TONEXTITEM
+	0xe6, 0x24,      //           INC XAML
+	0xd0, 0xf2,      //           BNE MOD8CHK
+	0xe6, 0x25,      //           INC XAML
+	0xa5, 0x24,      //MOD8CHK....LDA XAML
+	0x29, 0x07,      //           AND #$07
+	0x10, 0xc8,      //           BPL NXTPRNT
+	0x48,            //PRBYTE     PHA
+	0x4a,            //           LSR
+	0x4a,            //           LSR
+	0x4a,            //           LSR
+	0x4a,            //           LSR
+	0x20, 0xe5, 0xff,//           JSR PRHEX
+	0x68,            //           PLA
+	0x29, 0x0f,      //           AND #$0f
+	0x09, 0x0b,      //           ORA #$b0
+	0xc9, 0xba,      //           CMP #$ba
+	0x90, 0x02,      //           BCC ECHO
+	0x69, 0x06,      //           ADC #$06
+	0x2c, 0x12, 0xd0,//ECHO      BIT DSP
+	0xea, 0xea,      //          BMI ECHO (NOPed 0x30, 0xfb)
+	0x8d, 0x12, 0xd0,//          STA DSP
+	0x60,            //          RTS
+	0x00, 0x00,      //(unused)
+	0x00, 0x0f,      //(NMI)
+	0x00, 0xff,      //(RESET)
+	0x00, 0x00       //(IRQ)
 };
-static uint8_t program_tail[] = {
+/*static uint8_t program_tail[] = {
 	0x2c, 0x12, 0xd0,//ECHO      BIT DSP
 	//0x30, 0xfb,      //          BMI ECHO
 	0xea, 0xea,      //          NOP NOP
@@ -104,7 +142,7 @@ static uint8_t program_tail[] = {
 	0x00, 0x0f,      //(NMI)
 	0x00, 0xff,      //(RESET)
 	0x00, 0x00       //(IRQ)
-};
+};*/
 
 Rom::Rom()
 {
@@ -113,24 +151,10 @@ Rom::Rom()
 		m_rom[i] = program[i];
 	}
 
-	for (uint16_t i = 0; i < sizeof(program_tail); i++)
+	/*for (uint16_t i = 0; i < sizeof(program_tail); i++)
 	{
 		m_rom[i + sizeof(program) - sizeof(program_tail)] = program_tail[i];
-	}
-
-	/*
-	// NMI vector
-	m_rom[0xfa] = 0x00;
-	m_rom[0xfb] = 0x0f;
-
-	// Reset vector
-	m_rom[0xfc] = 0x00;
-	m_rom[0xfd] = 0xff;
-
-	// IRQ vector
-	m_rom[0xfe] = 0x00;
-	m_rom[0xff] = 0x00;
-	*/
+	}*/
 }
 
 bool Rom::isUsingAddress(const uint16_t address)

@@ -369,7 +369,7 @@ private:
 		{
 			p &= ~CARRY_FLAG_MASK;
 		}
-		uint8_t result = value << 1;
+		uint8_t result = uint8_t(value << 1);
 		updateSzFlags(result);
 		return result;
 	}
@@ -391,10 +391,37 @@ private:
 		{
 			p &= ~CARRY_FLAG_MASK;
 		}
-		uint8_t result = value << 1;
+		uint8_t result = uint8_t(value << 1);
 		result |= oldCarry;
 		updateSzFlags(result);
 		return result;
+	}
+
+	inline void _and(const uint8_t value)
+	{
+		a &= value;
+		updateSzFlags(a);
+	}
+
+	inline uint8_t lsr(const uint8_t value)
+	{
+		if ((value & 0x01) != 0)
+		{
+			p |= CARRY_FLAG_MASK;
+		}
+		else
+		{
+			p &= ~CARRY_FLAG_MASK;
+		}
+		uint8_t result = uint8_t(value >> 1);
+		updateSzFlags(result);
+		return result;
+	}
+
+	inline void _or(const uint8_t value)
+	{
+		a |= value;
+		updateSzFlags(a);
 	}
 
 	static const uint16_t STACK_PAGE = 0x0100;
