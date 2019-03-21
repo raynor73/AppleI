@@ -214,16 +214,12 @@ private:
 		}
 	}
 
-	inline uint8_t sbc(
-			const uint8_t arg1,
-			const uint8_t arg2,
-			const bool shouldUpdateOverflowFlag,
-			const bool shouldConsiderCarryFlag
-	) {
-		if ((p & BCD_FLAG_MASK) == 0)
+	inline uint8_t sbc(const uint8_t arg1, const uint8_t arg2, const bool isCompare)
+	{
+		if ((p & BCD_FLAG_MASK) == 0 || isCompare)
 		{
 			uint16_t borrow;
-			if (shouldConsiderCarryFlag)
+			if (!isCompare)
 			{
 				borrow = (p & CARRY_FLAG_MASK) != 0 ? 0 : 1;
 			}
@@ -236,22 +232,29 @@ private:
 
 			updateSzFlags(uint8_t(result));
 
-			if (arg1 < arg2WithBorrow) {
+			if (arg1 < arg2WithBorrow)
+			{
 				p &= ~CARRY_FLAG_MASK;
-			} else {
+			} else
+			{
 				p |= CARRY_FLAG_MASK;
 			}
 
-			if (shouldUpdateOverflowFlag)
+			if (!isCompare)
 			{
 				bool isFirstArgPositive = (arg1 & NEGATIVE_FLAG_MASK) == 0;
 				bool isSecondArgPositive = (arg2 & NEGATIVE_FLAG_MASK) == 0;
 				bool isResultPositive = (p & NEGATIVE_FLAG_MASK) == 0;
-				if (isFirstArgPositive && !isSecondArgPositive && !isResultPositive) {
+				if (isFirstArgPositive && !isSecondArgPositive && !isResultPositive)
+				{
 					p |= OVERFLOW_FLAG_MASK;
-				} else if (!isFirstArgPositive && isSecondArgPositive && isResultPositive) {
+				}
+				else if (!isFirstArgPositive && isSecondArgPositive && isResultPositive)
+				{
 					p |= OVERFLOW_FLAG_MASK;
-				} else {
+				}
+				else
+				{
 					p &= ~OVERFLOW_FLAG_MASK;
 				}
 			}
@@ -279,24 +282,29 @@ private:
 
 			updateSzFlags(uint8_t(binResult));
 
-			if (arg1 < arg2WithBorrow) {
+			if (arg1 < arg2WithBorrow)
+			{
 				p &= ~CARRY_FLAG_MASK;
-			} else {
+			}
+			else
+			{
 				p |= CARRY_FLAG_MASK;
 			}
 
-			if (shouldUpdateOverflowFlag)
+			bool isFirstArgPositive = (arg1 & NEGATIVE_FLAG_MASK) == 0;
+			bool isSecondArgPositive = (arg2 & NEGATIVE_FLAG_MASK) == 0;
+			bool isResultPositive = (p & NEGATIVE_FLAG_MASK) == 0;
+			if (isFirstArgPositive && !isSecondArgPositive && !isResultPositive)
 			{
-				bool isFirstArgPositive = (arg1 & NEGATIVE_FLAG_MASK) == 0;
-				bool isSecondArgPositive = (arg2 & NEGATIVE_FLAG_MASK) == 0;
-				bool isResultPositive = (p & NEGATIVE_FLAG_MASK) == 0;
-				if (isFirstArgPositive && !isSecondArgPositive && !isResultPositive) {
-					p |= OVERFLOW_FLAG_MASK;
-				} else if (!isFirstArgPositive && isSecondArgPositive && isResultPositive) {
-					p |= OVERFLOW_FLAG_MASK;
-				} else {
-					p &= ~OVERFLOW_FLAG_MASK;
-				}
+				p |= OVERFLOW_FLAG_MASK;
+			}
+			else if (!isFirstArgPositive && isSecondArgPositive && isResultPositive)
+			{
+				p |= OVERFLOW_FLAG_MASK;
+			}
+			else
+			{
+				p &= ~OVERFLOW_FLAG_MASK;
 			}
 
 			return uint8_t(decResult);
@@ -406,6 +414,23 @@ private:
 		}
 		uint8_t result = uint8_t(value << 1);
 		result |= oldCarry;
+		updateSzFlags(result);
+		return result;
+	}
+
+	inline uint8_t ror(const uint8_t value)
+	{
+		uint8_t oldCarry = (p & CARRY_FLAG_MASK) != 0 ? 1 : 0;
+		if ((value & 0x01) != 0)
+		{
+			p |= CARRY_FLAG_MASK;
+		}
+		else
+		{
+			p &= ~CARRY_FLAG_MASK;
+		}
+		uint8_t result = value >> 1;
+		result |= oldCarry << 7;
 		updateSzFlags(result);
 		return result;
 	}
