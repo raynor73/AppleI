@@ -23,6 +23,7 @@ public:
 
 	static const uint8_t NEGATIVE_FLAG_MASK =   0b10000000;
 	static const uint8_t OVERFLOW_FLAG_MASK =   0b01000000;
+	static const uint8_t RESERVED_FLAG_MASK =   0b00100000;
 	static const uint8_t BREAKPOINT_FLAG_MASK = 0b00010000;
 	static const uint8_t BCD_FLAG_MASK =        0b00001000;
 	static const uint8_t INTERRUPT_FLAG_MASK =  0b00000100;
@@ -213,11 +214,23 @@ private:
 		}
 	}
 
-	inline uint8_t sbc(const uint8_t arg1, const uint8_t arg2, const bool shouldUpdateOverflowFlag)
-	{
+	inline uint8_t sbc(
+			const uint8_t arg1,
+			const uint8_t arg2,
+			const bool shouldUpdateOverflowFlag,
+			const bool shouldConsiderCarryFlag
+	) {
 		if ((p & BCD_FLAG_MASK) == 0)
 		{
-			uint16_t borrow = (p & CARRY_FLAG_MASK) != 0 ? 0 : 1;
+			uint16_t borrow;
+			if (shouldConsiderCarryFlag)
+			{
+				borrow = (p & CARRY_FLAG_MASK) != 0 ? 0 : 1;
+			}
+			else
+			{
+				borrow = 0;
+			}
 			uint16_t arg2WithBorrow = arg2 + borrow;
 			uint16_t result = arg1 - arg2WithBorrow;
 
@@ -306,12 +319,12 @@ private:
 	inline void pushByte(const uint8_t value)
 	{
 		memory->writeByte(sp | STACK_PAGE, value);
-		sp++;
+		sp--;
 	}
 
 	inline uint8_t popByte()
 	{
-		sp--;
+		sp++;
 		return memory->readByte(sp | STACK_PAGE);
 	}
 
