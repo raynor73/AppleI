@@ -1,7 +1,8 @@
 #include <QDebug>
+#include <QFile>
+#include <QByteArray>
 #include "rom.h"
 
-//static const uint16_t ROM_SIZE = 0x100;
 static uint8_t program[] = {
 	0xd8,            //RESET     CLD
 	0x58,            //          CLI
@@ -130,32 +131,26 @@ static uint8_t program[] = {
 	0x00, 0x00,      //(unused)
 	0x00, 0x0f,      //(NMI)
 	0x00, 0xff,      //(RESET)
-	//0x00, 0x00,      //(RESET)
 	0x00, 0x00       //(IRQ)
 };
-/*static uint8_t program_tail[] = {
-	0x2c, 0x12, 0xd0,//ECHO      BIT DSP
-	//0x30, 0xfb,      //          BMI ECHO
-	0xea, 0xea,      //          NOP NOP
-	0x8d, 0x12, 0xd0,//          STA DSP
-	0x60,            //          RTS
-	0x00, 0x00,      //(unused)
-	0x00, 0x0f,      //(NMI)
-	0x00, 0xff,      //(RESET)
-	0x00, 0x00       //(IRQ)
-};*/
 
 Rom::Rom()
 {
-	for (uint16_t i = 0; i < sizeof(program); i++)
+	/*for (uint16_t i = 0; i < sizeof(program); i++)
 	{
 		m_rom[i] = program[i];
-	}
-
-	/*for (uint16_t i = 0; i < sizeof(program_tail); i++)
-	{
-		m_rom[i + sizeof(program) - sizeof(program_tail)] = program_tail[i];
 	}*/
+	QFile file("applesoft-lite-0.4.bin");
+	if (!file.open(QIODevice::ReadOnly))
+		throw std::runtime_error("Can't open ROM file");
+
+	QByteArray fileData = file.readAll();
+	for (int i = 0; i < fileData.size(); i++)
+	{
+		m_rom[i] = uint8_t(fileData.data()[i]);
+	}
+	m_rom[0xfff2 - LOWER_ADDRESS] = 0xea;
+	m_rom[0xfff3 - LOWER_ADDRESS] = 0xea;
 }
 
 bool Rom::isUsingAddress(const uint16_t address)
@@ -170,7 +165,7 @@ uint8_t Rom::readByte(const uint16_t address)
 		return 0;
 	}
 
-	return m_rom[address & 0xff];
+	return m_rom[address - LOWER_ADDRESS];
 }
 
 void Rom::writeByte(const uint16_t address, const uint8_t value)

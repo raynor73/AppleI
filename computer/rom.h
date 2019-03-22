@@ -13,10 +13,10 @@ public:
 	virtual void writeByte(const uint16_t address, const uint8_t value) override;
 
 private:
-	uint8_t m_rom[256];
+	uint8_t m_rom[0x2000];
 
-	static const uint16_t LOWER_ADDRESS = 0xff00;
-	//static const uint16_t HIGHER_ADDRESS = 0xffff;
+	//static const uint16_t LOWER_ADDRESS = 0xff00;
+	static const uint16_t LOWER_ADDRESS = 0xe000;
 };
 
 #endif // ROM_H

@@ -9,6 +9,12 @@ Console::Console(QWidget *parent) : QPlainTextEdit(parent)
 	p.setColor(QPalette::Base, Qt::black);
 	p.setColor(QPalette::Text, Qt::green);
 	setPalette(p);
+
+	QTextDocument *doc = document();
+	QFont font = doc->defaultFont();
+	//font.setFamily("Courier New");
+	font.setPixelSize(24);
+	doc->setDefaultFont(font);
 }
 
 void Console::putData(const QByteArray &data)
