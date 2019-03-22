@@ -12,7 +12,7 @@ Console::Console(QWidget *parent) : QPlainTextEdit(parent)
 
 	QTextDocument *doc = document();
 	QFont font = doc->defaultFont();
-	//font.setFamily("Courier New");
+	font.setFamily("Courier New");
 	font.setPixelSize(24);
 	doc->setDefaultFont(font);
 }
