@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>17</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuReset">
@@ -28,6 +28,7 @@
      <string>Actions</string>
     </property>
     <addaction name="actionReset"/>
+    <addaction name="actionLoadTxt"/>
    </widget>
    <addaction name="menuReset"/>
   </widget>
@@ -35,6 +36,11 @@
   <action name="actionReset">
    <property name="text">
     <string>Reset</string>
+   </property>
+  </action>
+  <action name="actionLoadTxt">
+   <property name="text">
+    <string>Load TXT</string>
    </property>
   </action>
  </widget>

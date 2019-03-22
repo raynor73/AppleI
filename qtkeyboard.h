@@ -10,6 +10,8 @@ class QtKeyboard : public QObject, public Keyboard
 public:
 	explicit QtKeyboard(QObject *parent = nullptr);
 
+	bool simulateKeystroke(const uint8_t asciiCode);
+
 protected:
 	bool eventFilter(QObject *obj, QEvent *event) override;
 
@@ -20,7 +22,17 @@ private:
 	static const uint8_t ASCII_CODE_ESC = 0x1B;
 
 	static const uint8_t ASCII_CODE_SPACE = 0x20;
-
+	static const uint8_t ASCII_CODE_EXCLAMATION = 0x21;
+	static const uint8_t ASCII_CODE_QUOTATION = 0x22;
+	static const uint8_t ASCII_CODE_NUMBER_SIGN = 0x23;
+	static const uint8_t ASCII_CODE_DOLLAR = 0x24;
+	static const uint8_t ASCII_CODE_PERCENT = 0x25;
+	static const uint8_t ASCII_CODE_AMPERSAND = 0x26;
+	static const uint8_t ASCII_CODE_APOSTROPHE = 0x27;
+	static const uint8_t ASCII_CODE_LEFT_PARENTHESIS = 0x28;
+	static const uint8_t ASCII_CODE_RIGHT_PARENTHESIS = 0x29;
+	static const uint8_t ASCII_CODE_ASTERISK = 0x2a;
+	static const uint8_t ASCII_CODE_PLUS = 0x2b;
 	static const uint8_t ASCII_CODE_COMMA = 0x2C;
 	static const uint8_t ASCII_CODE_HYPHEN = 0x2D;
 	static const uint8_t ASCII_CODE_PERIOD = 0x2E;
@@ -28,6 +40,11 @@ private:
 
 	static const uint8_t ASCII_CODE_COLON = 0x3A;
 	static const uint8_t ASCII_CODE_SEMICOLON = 0x3B;
+	static const uint8_t ASCII_CODE_LESS_THAN = 0x3c;
+	static const uint8_t ASCII_CODE_EQUALS = 0x3d;
+	static const uint8_t ASCII_CODE_GREATER_THAN = 0x3e;
+	static const uint8_t ASCII_CODE_QUESTION = 0x3f;
+	static const uint8_t ASCII_CODE_AT = 0x40;
 
 	static const uint8_t ASCII_CODE_0 = 0x30;
 	static const uint8_t ASCII_CODE_1 = 0x31;
@@ -66,6 +83,8 @@ private:
 	static const uint8_t ASCII_CODE_X_UPPER_CASE = 0x58;
 	static const uint8_t ASCII_CODE_Y_UPPER_CASE = 0x59;
 	static const uint8_t ASCII_CODE_Z_UPPER_CASE = 0x5A;
+
+	static const uint8_t ASCII_CODE_UNDERSCORE = 0x5f;
 };
 
 #endif // QTKEYBOARD_H

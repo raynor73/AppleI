@@ -3,6 +3,16 @@
 
 QtKeyboard::QtKeyboard(QObject *parent) : QObject(parent) {}
 
+bool QtKeyboard::simulateKeystroke(const uint8_t asciiCode) {
+	if (!m_hasKeyToRead) {
+		m_keyCode = ALWAYS_SET_DATA_BITS | asciiCode;
+		m_hasKeyToRead = true;
+		return true;
+	} else {
+		return false;
+	}
+}
+
 bool QtKeyboard::eventFilter(QObject *obj, QEvent *event)
 {
 	if (event->type() == QEvent::KeyPress)
@@ -21,6 +31,61 @@ bool QtKeyboard::eventFilter(QObject *obj, QEvent *event)
 
 		case Qt::Key_Space:
 			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_SPACE;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_Exclam:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_EXCLAMATION;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_QuoteDbl:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_QUOTATION;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_NumberSign:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_NUMBER_SIGN;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_Dollar:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_DOLLAR;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_Percent:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_PERCENT;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_Ampersand:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_AMPERSAND;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_Apostrophe:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_APOSTROPHE;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_ParenLeft:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_LEFT_PARENTHESIS;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_ParenRight:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_RIGHT_PARENTHESIS;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_Asterisk:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_ASTERISK;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_Plus:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_PLUS;
 			m_hasKeyToRead = true;
 			break;
 
@@ -51,6 +116,31 @@ bool QtKeyboard::eventFilter(QObject *obj, QEvent *event)
 
 		case Qt::Key_Semicolon:
 			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_SEMICOLON;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_Less:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_LESS_THAN;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_Equal:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_EQUALS;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_Greater:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_GREATER_THAN;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_Question:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_QUESTION;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_At:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_AT;
 			m_hasKeyToRead = true;
 			break;
 
@@ -231,6 +321,11 @@ bool QtKeyboard::eventFilter(QObject *obj, QEvent *event)
 
 		case Qt::Key_Z:
 			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_Z_UPPER_CASE;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_Underscore:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_UNDERSCORE;
 			m_hasKeyToRead = true;
 			break;
 		}

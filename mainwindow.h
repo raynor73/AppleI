@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "computer/computer.h"
+#include "loadtxtmodel.h"
 
 namespace Ui {
 class MainWindow;
@@ -18,6 +19,7 @@ public:
 
 private:
 	Ui::MainWindow *ui;
+	LoadTxtModel *m_loadTxtModel;
 };
 
 #endif // MAINWINDOW_H

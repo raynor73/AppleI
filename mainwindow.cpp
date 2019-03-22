@@ -1,10 +1,14 @@
 #include <QTimer>
 #include <QDebug>
+#include <QFileDialog>
+#include <QFile>
+#include <QException>
 #include "mainwindow.h"
 #include "ui_mainwindow2.h"
 #include "console.h"
 #include "qtkeyboard.h"
 #include "qtdisplay.h"
+#include "enhancedbasic.h"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -28,6 +32,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(ui->actionReset, &QAction::triggered, [computer] {
 		computer->reset();
+	});
+
+	m_loadTxtModel = new LoadTxtModel(*keyboard);
+	connect(ui->actionLoadTxt, &QAction::triggered, [this] {
+		m_loadTxtModel->onTextDataReceived(QByteArray(enhancedBasicTextData));
 	});
 }
 
