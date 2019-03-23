@@ -324,6 +324,26 @@ bool QtKeyboard::eventFilter(QObject *obj, QEvent *event)
 			m_hasKeyToRead = true;
 			break;
 
+		case Qt::Key_BracketLeft:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_LEFT_SQUARE_BRACKET;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_Backslash:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_BACKSLASH;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_BracketRight:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_RIGHT_SQUARE_BRACKET;
+			m_hasKeyToRead = true;
+			break;
+
+		case Qt::Key_AsciiCircum:
+			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_CARET;
+			m_hasKeyToRead = true;
+			break;
+
 		case Qt::Key_Underscore:
 			m_keyCode = ALWAYS_SET_DATA_BITS | ASCII_CODE_UNDERSCORE;
 			m_hasKeyToRead = true;

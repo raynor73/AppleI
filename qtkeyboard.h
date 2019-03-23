@@ -84,6 +84,10 @@ private:
 	static const uint8_t ASCII_CODE_Y_UPPER_CASE = 0x59;
 	static const uint8_t ASCII_CODE_Z_UPPER_CASE = 0x5A;
 
+	static const uint8_t ASCII_CODE_LEFT_SQUARE_BRACKET = 0x5B;
+	static const uint8_t ASCII_CODE_BACKSLASH = 0x5C;
+	static const uint8_t ASCII_CODE_RIGHT_SQUARE_BRACKET = 0x5D;
+	static const uint8_t ASCII_CODE_CARET = 0x5E;
 	static const uint8_t ASCII_CODE_UNDERSCORE = 0x5f;
 };
 

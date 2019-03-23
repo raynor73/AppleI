@@ -15,6 +15,12 @@ Console::Console(QWidget *parent) : QPlainTextEdit(parent)
 	font.setFamily("Courier New");
 	font.setPixelSize(24);
 	doc->setDefaultFont(font);
+
+	QString str("                                        ");
+	QFontMetrics fontMetrics(font);
+	setFixedWidth(fontMetrics.width(str));
+	setFixedHeight(fontMetrics.height() * 24);
+	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
 void Console::putData(const QByteArray &data)
