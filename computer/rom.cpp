@@ -136,11 +136,11 @@ static uint8_t program[] = {
 
 Rom::Rom()
 {
-	/*for (uint16_t i = 0; i < sizeof(program); i++)
+	for (uint16_t i = 0; i < sizeof(program); i++)
 	{
 		m_rom[i] = program[i];
-	}*/
-	QFile file("applesoft-lite-0.4.bin");
+	}
+	/*QFile file("applesoft-lite-0.4.bin");
 	if (!file.open(QIODevice::ReadOnly))
 		throw std::runtime_error("Can't open ROM file");
 
@@ -150,7 +150,7 @@ Rom::Rom()
 		m_rom[i] = uint8_t(fileData.data()[i]);
 	}
 	m_rom[0xfff2 - LOWER_ADDRESS] = 0xea;
-	m_rom[0xfff3 - LOWER_ADDRESS] = 0xea;
+	m_rom[0xfff3 - LOWER_ADDRESS] = 0xea;*/
 }
 
 bool Rom::isUsingAddress(const uint16_t address)

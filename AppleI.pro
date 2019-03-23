@@ -27,7 +27,9 @@ SOURCES += main.cpp\
     qtdisplay.cpp \
     computer/rom.cpp \
     computer/ram.cpp \
-    loadtxtmodel.cpp
+    loadtxtmodel.cpp \
+    loadbinmodel.cpp \
+    modelwithstate.cpp
 
 HEADERS  += mainwindow.h \
 	cpu6502/cpu6502.h \
@@ -45,7 +47,9 @@ HEADERS  += mainwindow.h \
     utils/debug.h \
     computer/ram.h \
 	loadtxtmodel.h \
-	enhancedbasic.h
+	enhancedbasic.h \
+    loadbinmodel.h \
+    modelwithstate.h
 
 FORMS    += \
     mainwindow2.ui

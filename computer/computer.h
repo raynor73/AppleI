@@ -16,12 +16,13 @@ public:
 	void clockTick();
 	void reset();
 
+	Ram *ram() { return &m_ram; }
+
 private:
 	Cpu6502 m_cpu;
 	SystemBus m_systemBus;
 	Rom m_rom;
 	Ram m_ram;
-
 };
 
 #endif // COMPUTER_H

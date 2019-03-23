@@ -15,8 +15,8 @@ public:
 private:
 	uint8_t m_rom[0x2000];
 
-	//static const uint16_t LOWER_ADDRESS = 0xff00;
-	static const uint16_t LOWER_ADDRESS = 0xe000;
+	static const uint16_t LOWER_ADDRESS = 0xff00;
+	//static const uint16_t LOWER_ADDRESS = 0xe000;
 };
 
 #endif // ROM_H

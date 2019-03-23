@@ -36,7 +36,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	m_loadTxtModel = new LoadTxtModel(*keyboard);
 	connect(ui->actionLoadTxt, &QAction::triggered, [this] {
-		m_loadTxtModel->onTextDataReceived(QByteArray(enhancedBasicTextData));
+		//m_loadTxtModel->onTextDataReceived(QByteArray(enhancedBasicTextData));
+	});
+
+	m_loadBinModel = new LoadBinModel(computer->ram());
+	connect(ui->actionLoadBin, &QAction::triggered, [this] {
+		QString fileName = QFileDialog::getOpenFileName(this, "Open Binary", "~", "Binary Files (*.rom *.bin)");
+		QFile file(fileName);
+		m_loadBinModel->onDataReceived(file.readAll());
+
 	});
 }
 

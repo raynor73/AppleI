@@ -36,6 +36,7 @@
     </property>
     <addaction name="actionReset"/>
     <addaction name="actionLoadTxt"/>
+    <addaction name="actionLoadBin"/>
    </widget>
    <addaction name="menuReset"/>
   </widget>
@@ -48,6 +49,11 @@
   <action name="actionLoadTxt">
    <property name="text">
     <string>Load TXT</string>
+   </property>
+  </action>
+  <action name="actionLoadBin">
+   <property name="text">
+    <string>Load BIN</string>
    </property>
   </action>
  </widget>
