@@ -44,7 +44,6 @@ HEADERS  += mainwindow.h \
     computer/display.h \
     qtdisplay.h \
     computer/rom.h \
-    utils/debug.h \
     computer/ram.h \
 	loadtxtmodel.h \
 	enhancedbasic.h \

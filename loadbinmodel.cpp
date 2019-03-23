@@ -12,7 +12,7 @@ void LoadBinModel::onDataReceived(QByteArray data)
 	}
 }
 
-void LoadBinModel::onStartAddressReceived(const uint16_t address)
+void LoadBinModel::onStartAddressProvided(const uint16_t address)
 {
 	if (m_state == STATE_AWAITING_START_ADDRESS) {
 		for (int i = 0; i < m_data.size(); i++) {

@@ -1,6 +1,8 @@
 #include <QTimer>
 #include <QDebug>
 #include <QFileDialog>
+#include <QInputDialog>
+#include <QMessageBox>
 #include <QFile>
 #include <QException>
 #include "mainwindow.h"
@@ -43,8 +45,22 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionLoadBin, &QAction::triggered, [this] {
 		QString fileName = QFileDialog::getOpenFileName(this, "Open Binary", "~", "Binary Files (*.rom *.bin)");
 		QFile file(fileName);
-		m_loadBinModel->onDataReceived(file.readAll());
-
+		if (file.open(QIODevice::ReadOnly)) {
+			m_loadBinModel->onDataReceived(file.readAll());
+			uint16_t address = QInputDialog::getInt(
+						this,
+						"Start Address",
+						"Start Address:",
+						0xe000,
+						0,
+						0xffff
+			);
+			m_loadBinModel->onStartAddressProvided(address);
+		} else {
+			QMessageBox msgBox;
+			msgBox.setText("Can't open file");
+			msgBox.exec();
+		}
 	});
 }
 

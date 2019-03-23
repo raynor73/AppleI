@@ -14,7 +14,7 @@ public:
 
 public slots:
 	void onDataReceived(QByteArray data);
-	void onStartAddressReceived(const uint16_t address);
+	void onStartAddressProvided(const uint16_t address);
 
 private:
 	Memory *m_memory;
