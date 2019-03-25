@@ -5,14 +5,14 @@
 
 Ram::Ram()
 {
-	/*QFile file("6502_functional_test.bin");
+	/*QFile file("6502_decimal_test.bin");
 	if (!file.open(QIODevice::ReadOnly))
 		throw std::runtime_error("Can't open test file");
 
 	QByteArray fileData = file.readAll();
-	for (uint32_t i = 0; i < 65536; i++)
+	for (uint32_t i = 0; i < fileData.size(); i++)
 	{
-		m_ram[i] = uint8_t(fileData.data()[i]);
+		m_ram[0x200 + i] = uint8_t(fileData.data()[i]);
 	}*/
 }
 

@@ -14,6 +14,8 @@ public:
 	uint16_t pc;
 	uint8_t p;
 
+	bool isDebugMode;
+
 	Memory *memory;
 
 	explicit Cpu6502();

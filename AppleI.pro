@@ -46,7 +46,6 @@ HEADERS  += mainwindow.h \
     computer/rom.h \
     computer/ram.h \
 	loadtxtmodel.h \
-	enhancedbasic.h \
     loadbinmodel.h \
     modelwithstate.h
 

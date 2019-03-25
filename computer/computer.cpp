@@ -18,3 +18,8 @@ void Computer::reset()
 {
 	m_cpu.reset();
 }
+
+void Computer::toggleDebug()
+{
+	m_cpu.isDebugMode = !m_cpu.isDebugMode;
+}

@@ -7,9 +7,9 @@ QtDisplay::QtDisplay(Console *consoleWidget, QObject *parent) :
 
 void QtDisplay::writeByte(const uint16_t address, const uint8_t value)
 {
-	if (!m_isDisplayReady) {
+	/*if (!m_isDisplayReady) {
 		return;
-	}
+	}*/
 
 	Display::writeByte(address, value);
 
@@ -17,6 +17,7 @@ void QtDisplay::writeByte(const uint16_t address, const uint8_t value)
 	{
 	case DATA_PORT:
 		m_charArray[0] = value & 0x7f;
+		//qDebug("Display %c", m_charArray[0]);
 		m_consoleWidget->putData(QByteArray(m_charArray, 1));
 		break;
 

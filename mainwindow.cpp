@@ -10,7 +10,6 @@
 #include "console.h"
 #include "qtkeyboard.h"
 #include "qtdisplay.h"
-#include "enhancedbasic.h"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -26,11 +25,23 @@ MainWindow::MainWindow(QWidget *parent) :
 	QtDisplay *display = new QtDisplay(consoleWidget);
 	Computer *computer = new Computer(keyboard, display);
 	consoleWidget->installEventFilter(keyboard);
-	//timer->setInterval(100);
+	//timer->setInterval(1);
 	connect(timer, &QTimer::timeout, [computer] {
 		computer->clockTick();
 	});
 	timer->start();
+
+	connect(ui->actionToggleDebug, &QAction::triggered, [computer, timer] {
+		computer->toggleDebug();
+		/*if (timer->isActive()) {
+			timer->stop();
+		} else {
+			timer->start();
+		}*/
+	});
+	connect(ui->actionCpuTick, &QAction::triggered, [computer] {
+		computer->clockTick();
+	});
 
 	connect(ui->actionReset, &QAction::triggered, [computer] {
 		computer->reset();
@@ -38,7 +49,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	m_loadTxtModel = new LoadTxtModel(*keyboard);
 	connect(ui->actionLoadTxt, &QAction::triggered, [this] {
-		//m_loadTxtModel->onTextDataReceived(QByteArray(enhancedBasicTextData));
+		QString fileName = QFileDialog::getOpenFileName(this, "Open Text File", "~", "Text Files (*.txt)");
+		QFile file(fileName);
+		if (file.open(QIODevice::ReadOnly)) {
+			m_loadTxtModel->onTextDataReceived(file.readAll());
+		} else {
+			QMessageBox msgBox;
+			msgBox.setText("Can't open file");
+			msgBox.exec();
+		}
 	});
 
 	m_loadBinModel = new LoadBinModel(computer->ram());

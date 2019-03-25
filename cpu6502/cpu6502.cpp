@@ -1,11 +1,12 @@
 #include <QDebug>
 #include "cpu6502.h"
 
-//#define cpuDebug(...) do { qDebug(formatCpuState(*this).toLatin1().data()); qDebug(__VA_ARGS__); qDebug("==="); } while (false)
+#include "utils/utils.h"
+#define cpuDebug(...) do { if (isDebugMode) {qDebug(formatCpuState(*this).toLatin1().data()); qDebug(__VA_ARGS__); qDebug("===");} } while (false)
 //#define cpuDebug(...) do { qDebug("0x%04x: ", (*this).pc); qDebug(__VA_ARGS__); } while (false)
-#define cpuDebug(...)
+//#define cpuDebug(...)
 
-Cpu6502::Cpu6502() : m_isUndefinedState(false) {}
+Cpu6502::Cpu6502() : isDebugMode(false), m_isUndefinedState(false) {}
 
 void Cpu6502::clockTick()
 {

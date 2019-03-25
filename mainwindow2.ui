@@ -37,6 +37,8 @@
     <addaction name="actionReset"/>
     <addaction name="actionLoadTxt"/>
     <addaction name="actionLoadBin"/>
+    <addaction name="actionToggleDebug"/>
+    <addaction name="actionCpuTick"/>
    </widget>
    <addaction name="menuReset"/>
   </widget>
@@ -54,6 +56,16 @@
   <action name="actionLoadBin">
    <property name="text">
     <string>Load BIN</string>
+   </property>
+  </action>
+  <action name="actionToggleDebug">
+   <property name="text">
+    <string>Toggle Debug</string>
+   </property>
+  </action>
+  <action name="actionCpuTick">
+   <property name="text">
+    <string>CPU Tick</string>
    </property>
   </action>
  </widget>

@@ -7,7 +7,7 @@ uint8_t Display::readByte(const uint16_t address)
 {
 	switch (address) {
 	case DATA_PORT: {
-		uint8_t value = m_isDisplayReady ? 0x80 : 0x00;
+		uint8_t value = m_isDisplayReady ? 0x8f : 0x7f;
 		m_isDisplayReady = true;
 		return value;
 	}

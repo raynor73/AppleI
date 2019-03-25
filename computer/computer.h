@@ -16,6 +16,8 @@ public:
 	void clockTick();
 	void reset();
 
+	void toggleDebug();
+
 	Ram *ram() { return &m_ram; }
 
 private:
