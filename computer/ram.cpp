@@ -12,7 +12,10 @@ Ram::Ram()
 	QByteArray fileData = file.readAll();
 	for (uint32_t i = 0; i < fileData.size(); i++)
 	{
-		m_ram[0x200 + i] = uint8_t(fileData.data()[i]);
+		m_ram[0x4000 + i] = uint8_t(fileData.data()[i]);
+	}*/
+	/*for (int i = 0; i < 0x100; i++) {
+		m_ram[i] = 0x03;
 	}*/
 }
 

@@ -41,6 +41,26 @@ void Cpu6502::clockTick()
 		pc++;
 		break;
 
+	case 0x03:
+		qDebug("Unofficial opcode 0x03");
+		/*cpuDebug("SLO Indirect X (unofficial opcode)");
+		pc++;
+		value = asl(loadIndirectX());
+		storeIndirectX(value);
+		_or(value);
+		m_operationTime = 8;
+		pc++;
+		pc += 2;*/
+		pc++;
+		break;
+
+	case 0x04:
+		qDebug("Unofficial opcode 0x04");
+		//cpuDebug("NOP Zero Page (unofficial opcode)");
+		//m_operationTime = 3;
+		pc += 2;
+		break;
+
 	case 0x05:
 		cpuDebug("ORA Zero Page");
 		pc++;
@@ -293,6 +313,19 @@ void Cpu6502::clockTick()
 		pc++;
 		break;
 
+	case 0x37:
+		qDebug("Unofficial opcode 0x37");
+		//cpuDebug("RLA Zero Page X (unofficial opcode)");
+		/*pc++;
+		address = (memory->readByte(pc) + x) & 0xff;
+		value = rol(memory->readByte(address));
+		memory->writeByte(address, value);
+		_and(value);
+		m_operationTime = 6;
+		pc++;*/
+		pc++;
+		break;
+
 	case 0x38:
 		cpuDebug("SEC");
 		p |= CARRY_FLAG_MASK;
@@ -305,6 +338,15 @@ void Cpu6502::clockTick()
 		pc++;
 		_and(loadAbsoluteY(4, true));
 		pc += 2;
+		break;
+
+	case 0x3c:
+		qDebug("Unofficial opcode 0x3c");
+		//cpuDebug("NOP Absolute X (unofficial opcode)");
+		/*pc++;
+		loadAbsoluteX(4, true);
+		pc += 2;*/
+		pc += 3;
 		break;
 
 	case 0x3d:
@@ -1303,6 +1345,18 @@ void Cpu6502::clockTick()
 		updateSzFlags(value);
 		m_operationTime = 7;
 		pc += 2;
+		break;
+
+	case 0xff:
+		qDebug("Unofficial opcode 0xff");
+		//cpuDebug("ISC Absolute X (unofficial opcode)");
+		/*pc++;
+		address = readWord(pc) + x;
+		value = memory->readByte(address) + 1;
+		a = sbc(a, value, false);
+		m_operationTime = 7;
+		pc += 2;*/
+		pc++;
 		break;
 
 	default:

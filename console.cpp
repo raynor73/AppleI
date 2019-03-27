@@ -16,7 +16,7 @@ Console::Console(QWidget *parent) : QPlainTextEdit(parent)
 	font.setPixelSize(24);
 	doc->setDefaultFont(font);
 
-	QString str("                                        ");
+	QString str("                                         ");
 	QFontMetrics fontMetrics(font);
 	setFixedWidth(fontMetrics.width(str));
 	setFixedHeight(fontMetrics.height() * 24);
