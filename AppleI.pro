@@ -29,7 +29,12 @@ SOURCES += main.cpp\
     computer/ram.cpp \
     loadtxtmodel.cpp \
     loadbinmodel.cpp \
-    modelwithstate.cpp
+    modelwithstate.cpp \
+    test/testmemory.cpp \
+    test/cpuoperation.cpp \
+    test/testcase.cpp \
+	test/cpustate.cpp \
+	test/m6502.c
 
 HEADERS  += mainwindow.h \
 	cpu6502/cpu6502.h \
@@ -47,7 +52,12 @@ HEADERS  += mainwindow.h \
     computer/ram.h \
 	loadtxtmodel.h \
     loadbinmodel.h \
-    modelwithstate.h
+    modelwithstate.h \
+    test/testmemory.h \
+    test/cpuoperation.h \
+    test/testcase.h \
+	test/cpustate.h \
+	test/m6502.h
 
 FORMS    += \
     mainwindow2.ui
