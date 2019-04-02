@@ -9,7 +9,7 @@ class TestCase
 {
 public:
 	explicit TestCase(
-			Cpu6502 *cpu,
+			Mos6502::Cpu *cpu,
 			const CpuState *initialCpuState,
 			const std::map<uint16_t, uint8_t> *initialMemoryState,
 			const std::map<uint16_t, uint8_t> *expectedMemoryState,
@@ -21,6 +21,9 @@ public:
 	bool passed();
 
 	virtual ~TestCase();
+
+private:
+	int m_cpuStateBuffer[6];
 };
 
 #endif // TESTCASE_H

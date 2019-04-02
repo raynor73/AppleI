@@ -2,10 +2,10 @@
 #define SYSTEMBUS_H
 
 #include <forward_list>
-#include "cpu6502/memory.h"
+#include "cpu6502/cpu6502memory.h"
 #include "device.h"
 
-class SystemBus : public Memory
+class SystemBus : public Mos6502::Memory
 {
 public:
 	void addDevice(Device *device);

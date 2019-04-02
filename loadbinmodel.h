@@ -2,12 +2,12 @@
 #define LOADBINMODEL_H
 
 #include "modelwithstate.h"
-#include "cpu6502/memory.h"
+#include "cpu6502/cpu6502memory.h"
 
 class LoadBinModel : public ModelWithState
 {
 public:
-	explicit LoadBinModel(Memory *memory, QObject *parent = 0);
+	explicit LoadBinModel(Mos6502::Memory *memory, QObject *parent = 0);
 
 	static const int STATE_AWAITING_DATA = 1;
 	static const int STATE_AWAITING_START_ADDRESS = 2;
@@ -17,7 +17,7 @@ public slots:
 	void onStartAddressProvided(const uint16_t address);
 
 private:
-	Memory *m_memory;
+	Mos6502::Memory *m_memory;
 	QByteArray m_data;
 };
 

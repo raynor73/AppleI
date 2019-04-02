@@ -21,7 +21,6 @@ SOURCES += main.cpp\
     computer/systembus.cpp \
     computer/computer.cpp \
     computer/keyboard.cpp \
-    cpu6502/memory.cpp \
     qtkeyboard.cpp \
     computer/display.cpp \
     qtdisplay.cpp \
@@ -34,13 +33,14 @@ SOURCES += main.cpp\
     test/cpuoperation.cpp \
     test/testcase.cpp \
 	test/cpustate.cpp \
-	test/m6502.c
+	test/m6502.c \
+	test/memory.c \
+    cpu6502/cpu6502memory.cpp
 
 HEADERS  += mainwindow.h \
 	cpu6502/cpu6502.h \
 	utils/utils.h \
 	console.h \
-    cpu6502/memory.h \
     computer/systembus.h \
     computer/device.h \
     computer/computer.h \
@@ -57,7 +57,9 @@ HEADERS  += mainwindow.h \
     test/cpuoperation.h \
     test/testcase.h \
 	test/cpustate.h \
-	test/m6502.h
+	test/m6502.h \
+	test/memory.h \
+    cpu6502/cpu6502memory.h
 
 FORMS    += \
     mainwindow2.ui

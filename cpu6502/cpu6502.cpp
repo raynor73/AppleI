@@ -6,9 +6,11 @@
 //#define cpuDebug(...) do { qDebug("0x%04x: ", (*this).pc); qDebug(__VA_ARGS__); } while (false)
 //#define cpuDebug(...)
 
-Cpu6502::Cpu6502() : isDebugMode(false), m_isUndefinedState(false) {}
+namespace Mos6502 {
 
-void Cpu6502::clockTick()
+Cpu::Cpu() : isDebugMode(false), m_isUndefinedState(false) {}
+
+void Cpu::clockTick()
 {
 	if (m_isUndefinedState)
 	{
@@ -1365,9 +1367,11 @@ void Cpu6502::clockTick()
 	}
 }
 
-void Cpu6502::reset()
+void Cpu::reset()
 {
 	pc = readWord(0xfffc);
 	p |= INTERRUPT_FLAG_MASK;
 	m_isUndefinedState = false;
+}
+
 }

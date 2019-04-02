@@ -2,10 +2,11 @@
 #define CPU6502_H
 
 #include <cstdint>
-#include "memory.h"
+#include "cpu6502memory.h"
 
-class Cpu6502
-{
+namespace Mos6502 {
+
+class Cpu {
 public:
 	uint8_t a;
 	uint8_t x;
@@ -18,7 +19,7 @@ public:
 
 	Memory *memory;
 
-	explicit Cpu6502();
+	explicit Cpu();
 
 	void clockTick();
 	void reset();
@@ -466,5 +467,8 @@ private:
 
 	static const uint16_t STACK_PAGE = 0x0100;
 };
+
+}
+
 
 #endif // CPU6502_H

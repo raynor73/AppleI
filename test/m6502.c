@@ -1,22 +1,3 @@
-// Pom1 Apple 1 Emulator
-// Copyright (C) 2000 Verhille Arnaud
-// Copyright (C) 2012 John D. Corrado
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
-// of the License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
-#include "SDL.h"
 #include "memory.h"
 
 #define N 0x80
@@ -34,25 +15,11 @@ static unsigned char btmp;
 static unsigned short op, opH, opL, ptr, ptrH, ptrL, tmp;
 static long lastTime;
 static int cycles, cyclesBeforeSynchro, _synchroMillis;
-static SDL_Thread *thread;
 static int running;
 
 static unsigned short memReadAbsolute(unsigned short adr)
 {
 	return (memRead(adr) | memRead((unsigned short)(adr + 1)) << 8);
-}
-
-static void synchronize(void)
-{
-	int realTimeMillis = SDL_GetTicks() - lastTime;
-	int sleepMillis = _synchroMillis - realTimeMillis;
-
-	if (sleepMillis < 0)
-		sleepMillis = 5;
-
-	SDL_Delay(sleepMillis);
-
-	lastTime = SDL_GetTicks();
 }
 
 static void pushProgramCounter(void)
@@ -1733,7 +1700,7 @@ static void executeOpcode(void)
 	}
 }
 
-static int runM6502(void *data)
+/*static int runM6502(void *data)
 {
 	while (running)
 	{
@@ -1753,19 +1720,16 @@ static int runM6502(void *data)
 	}
 
 	return 0;
-}
+}*/
 
-void startM6502(void)
+void step(void)
 {
-	running = 1;
-	lastTime = SDL_GetTicks();
-	thread = SDL_CreateThread(runM6502, NULL);
-}
+	if (!(statusRegister & I) && IRQ)
+		handleIRQ();
+	if (NMI)
+		handleNMI();
 
-void stopM6502(void)
-{
-	running = 0;
-	SDL_WaitThread(thread, NULL);
+	executeOpcode();
 }
 
 void resetM6502(void)

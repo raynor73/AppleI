@@ -4,6 +4,6 @@
 #include <QString>
 #include "cpu6502/cpu6502.h"
 
-QString formatCpuState(const Cpu6502 &cpu);
+QString formatCpuState(const Mos6502::Cpu &cpu);
 
 #endif // UTILS_H

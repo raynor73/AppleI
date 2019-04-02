@@ -16,15 +16,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#ifndef __M6502_H__
-#define __M6502_H__
+#ifndef __MEMORY_H__
+#define __MEMORY_H__
 
-void resetM6502(void);
-void setSpeed(int freq, int synchroMillis);
-void setIRQ(int state);
-void setNMI(void);
-int *dumpState(void);
-void loadState(int *state);
-void step(void);
+unsigned char memRead(unsigned short address);
+void memWrite(unsigned short address, unsigned char value);
 
 #endif

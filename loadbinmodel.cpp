@@ -1,6 +1,6 @@
 #include "loadbinmodel.h"
 
-LoadBinModel::LoadBinModel(Memory *memory, QObject *parent) :
+LoadBinModel::LoadBinModel(Mos6502::Memory *memory, QObject *parent) :
 	ModelWithState(STATE_AWAITING_DATA, parent),
 	m_memory(memory) {}
 
