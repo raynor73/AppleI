@@ -19,7 +19,10 @@
 #ifndef __MEMORY_H__
 #define __MEMORY_H__
 
+#include "testmemory.h"
+
 unsigned char memRead(unsigned short address);
 void memWrite(unsigned short address, unsigned char value);
+TestMemory &memGetTestMemory();
 
 #endif

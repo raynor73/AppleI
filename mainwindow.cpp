@@ -5,17 +5,48 @@
 #include <QMessageBox>
 #include <QFile>
 #include <QException>
+#include <map>
+#include <vector>
 #include "mainwindow.h"
 #include "ui_mainwindow2.h"
 #include "console.h"
 #include "qtkeyboard.h"
 #include "qtdisplay.h"
+#include "test/testcase.h"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
+
+	Mos6502::Cpu cpu;
+	cpu.isDebugMode = true;
+
+	TestMemory testMemory;
+	cpu.memory = &testMemory;
+
+	CpuState initialCpu(0x00, 0x00, 0x00, 0x00, 0x0300, 0x00);
+
+	std::map<uint16_t, uint8_t> initialMemory;
+	initialMemory[0x0400] = 0x42;
+	initialMemory[0x0000] = 0x00;
+	initialMemory[0x0001] = 0x04;
+	initialMemory[0x0300] = 0x01;
+	initialMemory[0x0301] = 0x00;
+
+	std::vector<CpuOperation> expectedOperations;
+	expectedOperations.push_back(CpuOperation(CpuOperation::OPERATION_TYPE_READ, 0x0300, 0x01));
+	expectedOperations.push_back(CpuOperation(CpuOperation::OPERATION_TYPE_READ, 0x0300, 0x00));
+	expectedOperations.push_back(CpuOperation(CpuOperation::OPERATION_TYPE_READ, 0x0000, 0x00));
+	expectedOperations.push_back(CpuOperation(CpuOperation::OPERATION_TYPE_READ, 0x0001, 0x04));
+	expectedOperations.push_back(CpuOperation(CpuOperation::OPERATION_TYPE_READ, 0x0400, 0x42));
+
+	TestCase testCase(&cpu, &testMemory, initialCpu, &initialMemory, &expectedOperations);
+	testCase.performTest();
+	qDebug("Test result: %d", testCase.passed());
+
+	return;
 
 	Console *consoleWidget = new Console();
 	setCentralWidget(consoleWidget);

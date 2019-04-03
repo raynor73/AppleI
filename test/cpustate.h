@@ -6,7 +6,9 @@
 class CpuState
 {
 public:
-	explicit CpuState(const uint8_t a, const uint8_t x, const uint8_t y, const uint8_t m_sp, const uint16_t pc, const uint8_t p);
+	CpuState();
+
+	CpuState(const uint8_t a, const uint8_t x, const uint8_t y, const uint8_t m_sp, const uint16_t pc, const uint8_t p);
 
 	inline bool operator==(const CpuState& other) {
 		return m_a == other.m_a &&
@@ -23,7 +25,7 @@ public:
 	inline uint8_t x() const { return m_x; }
 	inline uint8_t y() const { return m_y; }
 	inline uint8_t sp() const { return m_sp; }
-	inline uint8_t pc() const { return m_pc; }
+	inline uint16_t pc() const { return m_pc; }
 	inline uint8_t p() const { return m_p; }
 
 private:

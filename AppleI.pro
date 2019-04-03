@@ -33,8 +33,8 @@ SOURCES += main.cpp\
     test/cpuoperation.cpp \
     test/testcase.cpp \
 	test/cpustate.cpp \
-	test/m6502.c \
-	test/memory.c \
+	test/m6502.cpp \
+	test/memory.cpp \
     cpu6502/cpu6502memory.cpp
 
 HEADERS  += mainwindow.h \

@@ -19,7 +19,7 @@ public:
 
 	Memory *memory;
 
-	explicit Cpu();
+	Cpu();
 
 	void clockTick();
 	void reset();

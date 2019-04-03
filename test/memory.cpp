@@ -19,8 +19,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "memory.h"
 
-static unsigned char mem[65536];
+static TestMemory g_testMemory;
+
+unsigned char memRead(unsigned short address)
+{
+	return g_testMemory.readByte(address);
+}
+
+void memWrite(unsigned short address, unsigned char value)
+{
+	g_testMemory.writeByte(address, value);
+}
+
+TestMemory &memGetTestMemory()
+{
+	return g_testMemory;
+}
+
+/*static unsigned char mem[65536];
 
 unsigned char memRead(unsigned short address)
 {
@@ -30,4 +48,5 @@ unsigned char memRead(unsigned short address)
 void memWrite(unsigned short address, unsigned char value)
 {
 	mem[address] = value;
-}
+}*/
+
