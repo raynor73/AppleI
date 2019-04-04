@@ -35,5 +35,6 @@ private:
 };
 
 bool operator ==(const CpuOperation& lhs, const CpuOperation& rhs);
+bool operator !=(const CpuOperation& lhs, const CpuOperation& rhs);
 
 #endif // CPUOPERATION_H

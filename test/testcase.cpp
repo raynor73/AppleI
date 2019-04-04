@@ -62,7 +62,7 @@ bool TestCase::passed()
 	}
 
 	for (uint32_t i = 0; i < actualOperations->size(); i++) {
-		if (expectedOperations[i] != actualOperations[i]) {
+		if (expectedOperations->at(i) != actualOperations->at(i)) {
 			qDebug("Memory operations mismatch");
 			printExpectedCpuState();
 			printActualCpuState();
