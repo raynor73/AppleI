@@ -26,25 +26,18 @@ MainWindow::MainWindow(QWidget *parent) :
 	TestMemory testMemory;
 	cpu.memory = &testMemory;
 
-	CpuState initialCpu(0x00, 0x00, 0x00, 0x00, 0x0300, 0x00);
+	CpuState initialCpuState(0x00, 0x00, 0x00, 0x00, 0x0300, 0x00);
 
-	std::map<uint16_t, uint8_t> initialMemory;
-	initialMemory[0x0400] = 0x42;
-	initialMemory[0x0000] = 0x00;
-	initialMemory[0x0001] = 0x04;
-	initialMemory[0x0300] = 0x01;
-	initialMemory[0x0301] = 0x00;
+	std::map<uint16_t, uint8_t> initialMemoryState;
+	initialMemoryState[0x0400] = 0x42;
+	initialMemoryState[0x0000] = 0x00;
+	initialMemoryState[0x0001] = 0x04;
+	initialMemoryState[0x0300] = 0x01;
+	initialMemoryState[0x0301] = 0x00;
 
-	std::vector<CpuOperation> expectedOperations;
-	expectedOperations.push_back(CpuOperation(CpuOperation::OPERATION_TYPE_READ, 0x0300, 0x01));
-	expectedOperations.push_back(CpuOperation(CpuOperation::OPERATION_TYPE_READ, 0x0300, 0x00));
-	expectedOperations.push_back(CpuOperation(CpuOperation::OPERATION_TYPE_READ, 0x0000, 0x00));
-	expectedOperations.push_back(CpuOperation(CpuOperation::OPERATION_TYPE_READ, 0x0001, 0x04));
-	expectedOperations.push_back(CpuOperation(CpuOperation::OPERATION_TYPE_READ, 0x0400, 0x42));
-
-	TestCase testCase(&cpu, &testMemory, initialCpu, &initialMemory, &expectedOperations);
+	TestCase testCase(&cpu, &testMemory, initialCpuState, &initialMemoryState);
 	testCase.performTest();
-	qDebug("Test result: %d", testCase.passed());
+	qDebug(testCase.passed() ? "Test passed" : "Test failed");
 
 	return;
 
