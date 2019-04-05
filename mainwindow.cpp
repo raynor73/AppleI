@@ -7,6 +7,7 @@
 #include <QException>
 #include <map>
 #include <vector>
+#include <QProgressDialog>
 #include "mainwindow.h"
 #include "ui_mainwindow2.h"
 #include "console.h"
@@ -14,30 +15,15 @@
 #include "qtdisplay.h"
 #include "test/testcase.h"
 
+#include "test/testcases.h"
+
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
 
-	Mos6502::Cpu cpu;
-	cpu.isDebugMode = true;
-
-	TestMemory testMemory;
-	cpu.memory = &testMemory;
-
-	CpuState initialCpuState(0x00, 0x00, 0x00, 0x00, 0x0300, 0x00);
-
-	std::map<uint16_t, uint8_t> initialMemoryState;
-	initialMemoryState[0x0400] = 0x42;
-	initialMemoryState[0x0000] = 0x00;
-	initialMemoryState[0x0001] = 0x04;
-	initialMemoryState[0x0300] = 0x01;
-	initialMemoryState[0x0301] = 0x00;
-
-	TestCase testCase(&cpu, &testMemory, initialCpuState, &initialMemoryState);
-	testCase.performTest();
-	qDebug(testCase.passed() ? "Test passed" : "Test failed");
+	testPhp();
 
 	return;
 

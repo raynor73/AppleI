@@ -59,7 +59,8 @@ HEADERS  += mainwindow.h \
 	test/cpustate.h \
 	test/m6502.h \
 	test/memory.h \
-    cpu6502/cpu6502memory.h
+    cpu6502/cpu6502memory.h \
+    test/testcases.h
 
 FORMS    += \
     mainwindow2.ui

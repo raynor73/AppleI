@@ -82,8 +82,8 @@ void Cpu::clockTick()
 
 	case 0x08:
 		cpuDebug("PHP");
-		p |= RESERVED_FLAG_MASK;
-		p |= BREAKPOINT_FLAG_MASK;
+		/*p |= RESERVED_FLAG_MASK;
+		p |= BREAKPOINT_FLAG_MASK;*/
 		pushByte(p);
 		m_operationTime = 3;
 		pc++;
