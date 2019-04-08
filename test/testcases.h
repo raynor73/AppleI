@@ -207,3 +207,298 @@ static void testPhp() {
 
 	qDebug("%s test passed", testName);
 }
+
+static void testOraImmediate() {
+	const char *testName = "ORA Immediate";
+	qDebug("Starting %s test", testName);
+
+	Mos6502::Cpu cpu;
+	cpu.isDebugMode = false;
+
+	TestMemory testMemory;
+	cpu.memory = &testMemory;
+
+	const uint8_t maxA = 0xff;
+	const uint8_t maxMem = 0xff;
+	const uint8_t maxP = 0x7f;
+
+	const int totalVariants = (maxA + 1) * (maxMem + 1) * (maxP + 1);
+	int currentVariant = 0;
+	float prevProgress = -1;
+
+	std::map<uint16_t, uint8_t> initialMemoryState;
+	initialMemoryState[0x0300] = 0x09;
+	for (uint16_t aOperand = 0; aOperand <= maxA; aOperand++) {
+		for (uint16_t memOperand = 0; memOperand <= maxMem; memOperand++) {
+			initialMemoryState[0x0301] = memOperand;
+			for (uint8_t pVariant = 0; pVariant <= maxP; pVariant++) {
+				float currentProgress = (float) currentVariant / totalVariants;
+				if (prevProgress + 0.1 < currentProgress) {
+					prevProgress = currentProgress;
+					qDebug("%f", currentProgress);
+				}
+				currentVariant++;
+
+				CpuState initialCpuState(aOperand, 0x00, 0x00, 0x00, 0x0300, calculateP(pVariant));
+
+				TestCase testCase(&cpu, &testMemory, initialCpuState, &initialMemoryState);
+				testCase.performTest();
+				if (!testCase.passed()) {
+					qDebug("%s test failed", testName);
+					return;
+				}
+			}
+		}
+	}
+
+	qDebug("%s test passed", testName);
+}
+
+static void testOraAbsolute() {
+	const char *testName = "ORA Absolute";
+	qDebug("Starting %s test", testName);
+
+	Mos6502::Cpu cpu;
+	cpu.isDebugMode = false;
+
+	TestMemory testMemory;
+	cpu.memory = &testMemory;
+
+	const uint8_t maxA = 0xff;
+	const uint8_t maxMem = 0xff;
+	const uint8_t maxP = 0x7f;
+
+	const int totalVariants = (maxA + 1) * (maxMem + 1) * (maxP + 1);
+	int currentVariant = 0;
+	float prevProgress = -1;
+
+	std::map<uint16_t, uint8_t> initialMemoryState;
+	initialMemoryState[0x03fe] = 0x09;
+	initialMemoryState[0x03ff] = 0x01;
+	initialMemoryState[0x0400] = 0x05;
+	for (uint16_t aOperand = 0; aOperand <= maxA; aOperand++) {
+		for (uint16_t memOperand = 0; memOperand <= maxMem; memOperand++) {
+			initialMemoryState[0x0501] = memOperand;
+			for (uint8_t pVariant = 0; pVariant <= maxP; pVariant++) {
+				float currentProgress = (float) currentVariant / totalVariants;
+				if (prevProgress + 0.1 < currentProgress) {
+					prevProgress = currentProgress;
+					qDebug("%f", currentProgress);
+				}
+				currentVariant++;
+
+				CpuState initialCpuState(aOperand, 0x00, 0x00, 0x00, 0x03fe, calculateP(pVariant));
+
+				TestCase testCase(&cpu, &testMemory, initialCpuState, &initialMemoryState);
+				testCase.performTest();
+				if (!testCase.passed()) {
+					qDebug("%s test failed", testName);
+					return;
+				}
+			}
+		}
+	}
+
+	qDebug("%s test passed", testName);
+}
+
+static void testAslAccumulator() {
+	const char *testName = "ASL Accumulator";
+	qDebug("Starting %s test", testName);
+
+	Mos6502::Cpu cpu;
+	cpu.isDebugMode = true;
+
+	TestMemory testMemory;
+	cpu.memory = &testMemory;
+
+	const uint8_t maxA = 0xff;
+	const uint8_t maxP = 0x7f;
+
+	const int totalVariants = (maxA + 1) * (maxP + 1);
+	int currentVariant = 0;
+	float prevProgress = -1;
+
+	std::map<uint16_t, uint8_t> initialMemoryState;
+	initialMemoryState[0x03fe] = 0x0a;
+	for (uint16_t aOperand = 0; aOperand <= maxA; aOperand++) {
+		for (uint8_t pVariant = 0; pVariant <= maxP; pVariant++) {
+			float currentProgress = (float) currentVariant / totalVariants;
+			if (prevProgress + 0.1 < currentProgress) {
+				prevProgress = currentProgress;
+				qDebug("%f", currentProgress);
+			}
+			currentVariant++;
+
+			CpuState initialCpuState(aOperand, 0x00, 0x00, 0x00, 0x03fe, calculateP(pVariant));
+
+			TestCase testCase(&cpu, &testMemory, initialCpuState, &initialMemoryState);
+			testCase.performTest();
+			cpu.isDebugMode = false;
+			if (!testCase.passed()) {
+				qDebug("%s test failed", testName);
+				return;
+			}
+		}
+	}
+
+	qDebug("%s test passed", testName);
+}
+
+static void testAslAbsolute() {
+	const char *testName = "ASL Absolute";
+	qDebug("Starting %s test", testName);
+
+	Mos6502::Cpu cpu;
+	cpu.isDebugMode = true;
+
+	TestMemory testMemory;
+	cpu.memory = &testMemory;
+
+	const uint8_t maxMem = 0xff;
+	const uint8_t maxP = 0x7f;
+
+	const int totalVariants = (maxMem + 1) * (maxP + 1);
+	int currentVariant = 0;
+	float prevProgress = -1;
+
+	std::map<uint16_t, uint8_t> initialMemoryState;
+	initialMemoryState[0x03fe] = 0x0e;
+	initialMemoryState[0x03ff] = 0x01;
+	initialMemoryState[0x0400] = 0x05;
+	for (uint16_t memOperand = 0; memOperand <= maxMem; memOperand++) {
+		initialMemoryState[0x0501] = memOperand;
+		for (uint8_t pVariant = 0; pVariant <= maxP; pVariant++) {
+			float currentProgress = (float) currentVariant / totalVariants;
+			if (prevProgress + 0.1 < currentProgress) {
+				prevProgress = currentProgress;
+				qDebug("%f", currentProgress);
+			}
+			currentVariant++;
+
+			CpuState initialCpuState(0x00, 0x00, 0x00, 0x00, 0x03fe, calculateP(pVariant));
+
+			TestCase testCase(&cpu, &testMemory, initialCpuState, &initialMemoryState);
+			testCase.performTest();
+			cpu.isDebugMode = false;
+			if (!testCase.passed()) {
+				qDebug("%s test failed", testName);
+				return;
+			}
+		}
+	}
+
+	qDebug("%s test passed", testName);
+}
+
+static void testBpl() {
+	const char *testName = "BPL";
+	qDebug("Starting %s test", testName);
+
+	Mos6502::Cpu cpu;
+	cpu.isDebugMode = true;
+
+	TestMemory testMemory;
+	cpu.memory = &testMemory;
+
+	const uint8_t maxMem = 0xff;
+	const uint8_t maxP = 0x7f;
+
+	const int totalVariants = (maxMem + 1) * (maxP + 1);
+	int currentVariant = 0;
+	float prevProgress = -1;
+
+	std::map<uint16_t, uint8_t> initialMemoryState;
+	initialMemoryState[0x03fe] = 0x10;
+	for (uint16_t memOperand = 0; memOperand <= maxMem; memOperand++) {
+		initialMemoryState[0x03ff] = memOperand;
+		for (uint8_t pVariant = 0; pVariant <= maxP; pVariant++) {
+			float currentProgress = (float) currentVariant / totalVariants;
+			if (prevProgress + 0.1 < currentProgress) {
+				prevProgress = currentProgress;
+				qDebug("%f", currentProgress);
+			}
+			currentVariant++;
+
+			CpuState initialCpuState(0x00, 0x00, 0x00, 0x00, 0x03fe, calculateP(pVariant));
+
+			TestCase testCase(&cpu, &testMemory, initialCpuState, &initialMemoryState);
+			testCase.performTest();
+			cpu.isDebugMode = false;
+			if (!testCase.passed()) {
+				qDebug("%s test failed", testName);
+				return;
+			}
+		}
+	}
+
+	qDebug("%s test passed", testName);
+}
+
+static void testOraIndirectY() { // not passed
+	const chat *testName = "ORA Indirect Y";
+	qDebug("Starting %s test", testName);
+
+	Mos6502::Cpu cpu;
+	cpu.isDebugMode = true;
+
+	TestMemory testMemory;
+	cpu.memory = &testMemory;
+
+	const uint8_t maxA = 0xff;
+	const uint8_t maxMem = 0xff;
+	const uint8_t maxP = 0x7f;
+	const int numberOfMemoryVariants = 2;
+
+	const int totalVariants = (maxA + 1) * (maxMem + 1) * (maxP + 1) * numberOfMemoryVariants;
+	int currentVariant = 0;
+	float prevProgress = -1;
+
+	std::map<uint16_t, uint8_t> initialMemoryState;
+	for (int memoryVariant = 0; memoryVariant < numberOfMemoryVariants; memoryVariant++) {
+		initialMemoryState.clear();
+		uint8_t x;
+		switch (memoryVariant) {
+		case 0:
+			initialMemoryState[0x0080] = 0x01;
+			initialMemoryState[0x0081] = 0x04;
+			initialMemoryState[0x0300] = 0x11;
+			initialMemoryState[0x0301] = 0x80;
+			x = 0x00;
+			break;
+
+		case 1:
+			initialMemoryState[0x00ff] = 0x01;
+			initialMemoryState[0x0000] = 0x04;
+			initialMemoryState[0x0300] = 0x01;
+			initialMemoryState[0x0301] = 0x80;
+			x = 0x7f;
+			break;
+		};
+		for (uint16_t aOperand = 0; aOperand <= maxA; aOperand++) {
+			for (uint16_t memOperand = 0; memOperand <= maxMem; memOperand++) {
+				initialMemoryState[0x0401] = memOperand;
+				for (uint8_t pVariant = 0; pVariant <= maxP; pVariant++) {
+					float currentProgress = (float) currentVariant / totalVariants;
+					if (prevProgress + 0.1 < currentProgress) {
+						prevProgress = currentProgress;
+						qDebug("%f", currentProgress);
+					}
+					currentVariant++;
+
+					CpuState initialCpuState(aOperand, x, 0x00, 0x00, 0x0300, calculateP(pVariant));
+
+					TestCase testCase(&cpu, &testMemory, initialCpuState, &initialMemoryState);
+					testCase.performTest();
+					cpu.isDebugMode = true;
+					if (!testCase.passed()) {
+						qDebug("ORA %s failed", testName);
+						return;
+					}
+				}
+			}
+		}
+	}
+
+	qDebug("ORA %s passed", testName);
+}

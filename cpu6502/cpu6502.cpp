@@ -130,6 +130,7 @@ void Cpu::clockTick()
 		}
 		else
 		{
+			memory->readByte(pc); // Read operand even if we shouldn't branch (for tests compatibility)
 			m_operationTime = 2;
 		}
 		pc++;
