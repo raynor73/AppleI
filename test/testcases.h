@@ -1,3 +1,10 @@
+#include <cstdint>
+#include <QDebug>
+#include "test/testmemory.h"
+#include "test/cpustate.h"
+#include "test/testcase.h"
+#include "cpu6502/cpu6502.h"
+
 static uint8_t calculateP(const uint8_t variant) {
 	return (variant & 0x1f) | ((variant << 1) & 0xc0);
 }
@@ -436,7 +443,7 @@ static void testBpl() {
 }
 
 static void testOraIndirectY() { // not passed
-	const chat *testName = "ORA Indirect Y";
+	const char *testName = "ORA Indirect Y";
 	qDebug("Starting %s test", testName);
 
 	Mos6502::Cpu cpu;
@@ -457,27 +464,30 @@ static void testOraIndirectY() { // not passed
 	std::map<uint16_t, uint8_t> initialMemoryState;
 	for (int memoryVariant = 0; memoryVariant < numberOfMemoryVariants; memoryVariant++) {
 		initialMemoryState.clear();
-		uint8_t x;
+		uint8_t y;
+		uint16_t address;
 		switch (memoryVariant) {
 		case 0:
-			initialMemoryState[0x0080] = 0x01;
-			initialMemoryState[0x0081] = 0x04;
+			initialMemoryState[0x0000] = 0x04;
+			initialMemoryState[0x00ff] = 0x00;
 			initialMemoryState[0x0300] = 0x11;
-			initialMemoryState[0x0301] = 0x80;
-			x = 0x00;
+			initialMemoryState[0x0301] = 0xff;
+			y = 0x80;
+			address = 0x0480;
 			break;
 
 		case 1:
-			initialMemoryState[0x00ff] = 0x01;
-			initialMemoryState[0x0000] = 0x04;
-			initialMemoryState[0x0300] = 0x01;
-			initialMemoryState[0x0301] = 0x80;
-			x = 0x7f;
+			initialMemoryState[0x0000] = 0x80;
+			initialMemoryState[0x0001] = 0x04;
+			initialMemoryState[0x0300] = 0x11;
+			initialMemoryState[0x0301] = 0x00;
+			y = 0x80;
+			address = 0x0500;
 			break;
 		};
 		for (uint16_t aOperand = 0; aOperand <= maxA; aOperand++) {
 			for (uint16_t memOperand = 0; memOperand <= maxMem; memOperand++) {
-				initialMemoryState[0x0401] = memOperand;
+				initialMemoryState[address] = memOperand;
 				for (uint8_t pVariant = 0; pVariant <= maxP; pVariant++) {
 					float currentProgress = (float) currentVariant / totalVariants;
 					if (prevProgress + 0.1 < currentProgress) {
@@ -486,13 +496,13 @@ static void testOraIndirectY() { // not passed
 					}
 					currentVariant++;
 
-					CpuState initialCpuState(aOperand, x, 0x00, 0x00, 0x0300, calculateP(pVariant));
+					CpuState initialCpuState(aOperand, 0x00, y, 0x00, 0x0300, calculateP(pVariant));
 
 					TestCase testCase(&cpu, &testMemory, initialCpuState, &initialMemoryState);
 					testCase.performTest();
-					cpu.isDebugMode = true;
+					cpu.isDebugMode = false;
 					if (!testCase.passed()) {
-						qDebug("ORA %s failed", testName);
+						qDebug("%s test failed", testName);
 						return;
 					}
 				}
@@ -500,5 +510,59 @@ static void testOraIndirectY() { // not passed
 		}
 	}
 
-	qDebug("ORA %s passed", testName);
+	qDebug("%s test passed", testName);
 }
+
+static void testAdcImmediate() {
+	const char *testName = "ADC Immediate";
+	qDebug("Starting %s test", testName);
+
+	Mos6502::Cpu cpu;
+	cpu.isDebugMode = true;
+
+	TestMemory testMemory;
+	cpu.memory = &testMemory;
+
+	const uint8_t maxA = 0xff;
+	const uint8_t maxMem = 0xff;
+	const uint8_t maxP = 0x7f;
+
+	const int totalVariants = (maxA + 1) * (maxMem + 1) * (maxP + 1);
+	int currentVariant = 0;
+	float prevProgress = -1;
+
+	std::map<uint16_t, uint8_t> initialMemoryState;
+	initialMemoryState[0x0300] = 0x69;
+	for (uint16_t aOperand = 0; aOperand <= maxA; aOperand++) {
+		for (uint16_t memOperand = 0; memOperand <= maxMem; memOperand++) {
+			initialMemoryState[0x0301] = memOperand;
+			for (uint8_t pVariant = 0; pVariant <= maxP; pVariant++) {
+				float currentProgress = (float) currentVariant / totalVariants;
+				if (prevProgress + 0.1 < currentProgress) {
+					prevProgress = currentProgress;
+					qDebug("%f", currentProgress);
+				}
+				currentVariant++;
+
+				CpuState initialCpuState(aOperand, 0x00, 0x00, 0x00, 0x0300, calculateP(pVariant));
+
+				TestCase testCase(&cpu, &testMemory, initialCpuState, &initialMemoryState);
+				testCase.performTest();
+				//cpu.isDebugMode = false;
+				if (!testCase.passed()) {
+					qDebug("%s test failed", testName);
+					return;
+				}
+			}
+		}
+	}
+
+	qDebug("%s test passed", testName);
+}
+// 0xa9 0x09      // LDA 0x09
+// 0x48           // PHA
+// 0x28           // PLP
+// 0xa9 0x00      // LDA 0x00
+// 0x69 0x09      // ADC 0x09
+// 0x20 0xdc 0xff // JSR PRBYTE
+// 0x4c 0x1f 0xff // JMP GETLINE

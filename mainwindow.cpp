@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	testBpl();
+	testAdcImmediate();
 
 	return;
 
